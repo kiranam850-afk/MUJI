@@ -985,10 +985,114 @@ document.getElementById("gameOver").style.display = "none";
 
 document.getElementById("gameScreen").style.display = "block";
 
+/* MUSIK: stop game over, mulai bgm lagi */
+stopGameOverMusic();
+playBGM();
+
 loadLevel();
 startTimer();
 
 }
+
+/* ============================================
+   MUSIC SYSTEM
+   - Ganti nama file di bagian "GANTI DI SINI"
+   - Format didukung: .mp3 / .ogg / .wav
+   ============================================ */
+
+/* ---- GANTI DI SINI ---- */
+const BGM_FILE        = "BGM.mp3";         // musik sepanjang permainan (loop)
+const GAMEOVER_FILE   = "GAMEOVER.mp3";    // musik saat game over
+const WIN_LEVEL_FILE  = "WINLEVEL.mp3";   // sound saat berhasil clear 1 level
+const WIN_ALL_FILE    = "FINISH.mp3";     // sound saat berhasil semua level
+/* ----------------------- */
+
+const bgmAudio      = new Audio(BGM_FILE);
+bgmAudio.loop       = true;
+bgmAudio.volume     = 0.5;
+
+const gameOverAudio = new Audio(GAMEOVER_FILE);
+gameOverAudio.loop  = false;
+gameOverAudio.volume = 0.7;
+
+const winLevelAudio = new Audio(WIN_LEVEL_FILE);
+winLevelAudio.loop  = false;
+winLevelAudio.volume = 0.8;
+
+const winAllAudio   = new Audio(WIN_ALL_FILE);
+winAllAudio.loop    = false;
+winAllAudio.volume  = 0.8;
+
+function playBGM(){
+  [gameOverAudio, winLevelAudio, winAllAudio].forEach(a => { a.pause(); a.currentTime = 0; });
+  bgmAudio.currentTime = 0;
+  bgmAudio.play().catch(()=>{});
+}
+
+function stopBGM(){
+  bgmAudio.pause();
+  bgmAudio.currentTime = 0;
+}
+
+function playGameOverMusic(){
+  bgmAudio.pause();
+  bgmAudio.currentTime = 0;
+  gameOverAudio.currentTime = 0;
+  gameOverAudio.play().catch(()=>{});
+}
+
+function stopGameOverMusic(){
+  gameOverAudio.pause();
+  gameOverAudio.currentTime = 0;
+}
+
+function playWinLevel(){
+  bgmAudio.pause();
+  winLevelAudio.currentTime = 0;
+  winLevelAudio.play().catch(()=>{});
+  // BGM lanjut lagi setelah sound selesai
+  winLevelAudio.onended = () => { bgmAudio.play().catch(()=>{}); };
+}
+
+function playWinAll(){
+  bgmAudio.pause();
+  bgmAudio.currentTime = 0;
+  winAllAudio.currentTime = 0;
+  winAllAudio.play().catch(()=>{});
+}
+
+/* Hook: musik mulai saat game dimulai */
+const _origStartGame = startGame;
+window.startGame = function(){
+  _origStartGame();
+  playBGM();
+};
+
+/* Hook: ganti musik saat game over */
+const _origShowGameOver = showGameOver;
+window.showGameOver = function(){
+  _origShowGameOver();
+  playGameOverMusic();
+};
+
+/* Hook: sound menang per level (dipanggil saat payNow berhasil → receipt muncul) */
+const _origPayNow = payNow;
+window.payNow = function(){
+  const pinVal = document.getElementById("pin").value;
+  if(pinVal !== savedPin){ _origPayNow(); return; } // salah PIN → game over, skip
+  _origPayNow();
+  playWinLevel();
+};
+
+/* Hook: sound menang semua level */
+const _origNextLevel = nextLevel;
+window.nextLevel = function(){
+  if(level >= 5){
+    stopBGM();
+    playWinAll();
+  }
+  _origNextLevel();
+};
 
 </script>
 
