@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍓 Honey Berry Café</title>
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background-image:url("background.jpg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+overflow-x:hidden;
+}
+
+/* overlay biar tulisan keliatan */
+
+body::before{
+content:'';
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(228, 96, 166, 0.15);
+pointer-events:none;
+}
+
+/* START */
+
+#startScreen{
+width:100%;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.startBox{
+background:rgba(254, 145, 185, 0.92);
+padding:60px;
+border-radius:35px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+width:500px;
+}
+
+.startBox h1{
+font-size:55px;
+color:#ff2f84;
+margin-bottom:20px;
+}
+
+.startBox p{
+font-size:24px;
+margin-bottom:25px;
+}
+
+.startBtn{
+padding:20px 40px;
+font-size:25px;
+background:linear-gradient(to right,#ff4f9a,#ff2f84);
+border:none;
+color:rgb(255, 197, 224);
+border-radius:20px;
+cursor:pointer;
+transition:.2s;
+}
+
+.startBtn:hover{
+transform:scale(1.05);
+}
+
+/* GAME */
+
+#gameScreen{
+display:none;
+}
+
+header{
+width:100%;
+height:90px;
+background:#ff4f9a;
+display:flex;
+justify-content:space-around;
+align-items:center;
+color:white;
+font-size:20px;
+font-weight:bold;
+position:sticky;
+top:0;
+z-index:100;
+box-shadow:0 5px 15px rgba(224, 84, 140, 0.2);
+}
+
+.market{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:25px;
+padding:40px;
+padding-right:340px;
+}
+
+
+.item{
+background:linear-gradient(
+180deg,
+#f79cc9,
+#f382bc
+);
+border-radius:28px;
+padding:25px;
+text-align:center;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
+transition:.25s;
+}
+
+.item:hover{
+transform:translateY(-8px);
+}
+
+.emoji{
+font-size:55px;
+margin-bottom:10px;
+}
+
+.item h2{
+font-size:28px;
+margin-bottom:8px;
+color:white;
+}
+
+.item p{
+font-size:20px;
+margin-bottom:12px;
+color:white;
+}
+
+.item button{
+background:white;
+border:none;
+padding:14px 25px;
+border-radius:16px;
+font-size:20px;
+color:#ff5ca8;
+font-weight:bold;
+cursor:pointer;
+}
+.cart{
+position:fixed;
+right:25px;
+top:120px;
+width:290px;
+
+background:linear-gradient(
+180deg,
+#f79cc9,
+#f382bc
+);
+
+border-radius:30px;
+padding:25px;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+
+color:white;
+z-index:999;
+}
+
+.cart h1{
+font-size:35px;
+margin-bottom:20px;
+color:white;
+}
+
+#cartItems{
+max-height:230px;
+overflow:auto;
+}
+
+.cartItem{
+background:#ff6ab0;
+padding:12px;
+border-radius:12px;
+margin-bottom:10px;
+font-size:18px;
+}
+
+.checkout{
+width:100%;
+padding:18px;
+border:none;
+border-radius:18px;
+background:white;
+color:#ff5ca8;
+font-size:22px;
+font-weight:bold;
+cursor:pointer;
+margin-top:20px;
+}
+
+/* PAYMENT */
+
+#paymentScreen{
+display:none;
+width:100%;
+height:100vh;
+justify-content:center;
+align-items:center;
+}
+
+.paymentBox{
+background:rgba(255,255,255,0.95);
+padding:40px;
+border-radius:35px;
+text-align:center;
+width:420px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.paymentBox h1{
+color:#ff2f84;
+margin-bottom:20px;
+font-size:40px;
+}
+
+.qris{
+width:220px;
+height:220px;
+margin:auto;
+margin-bottom:20px;
+border-radius:15px;
+background:
+repeating-linear-gradient(
+45deg,
+black,
+black 10px,
+white 10px,
+white 20px
+);
+}
+
+.paymentBox input{
+width:220px;
+padding:15px;
+font-size:28px;
+text-align:center;
+border-radius:15px;
+border:2px solid pink;
+margin-top:15px;
+}
+
+.payBtn{
+margin-top:20px;
+padding:16px 30px;
+border:none;
+border-radius:15px;
+background:#ff2f84;
+color:white;
+font-size:22px;
+cursor:pointer;
+}
+
+/* RECEIPT */
+
+#receiptScreen{
+display:none;
+width:100%;
+height:100vh;
+justify-content:center;
+align-items:center;
+}
+
+.receipt{
+background:#fff;
+width:420px;
+padding:25px;
+border-radius:25px;
+box-shadow:0 15px 35px rgba(0,0,0,.2);
+position:relative;
+overflow:hidden;
+}
+
+.receipt::before{
+content:"🍓 HONEY BERRY CAFÉ 🍓";
+display:block;
+text-align:center;
+font-size:14px;
+font-weight:bold;
+letter-spacing:2px;
+color:#ff5ca8;
+padding-bottom:15px;
+border-bottom:2px dashed #ffb6d9;
+margin-bottom:15px;
+}
+
+.receiptHeader{
+text-align:center;
+margin-bottom:15px;
+}
+
+.receiptHeader h1{
+font-size:42px;
+color:#ff5ca8;
+margin-bottom:5px;
+background:none;
+}
+
+.receiptHeader p{
+color:#999;
+font-size:14px;
+}
+
+.receiptItems{
+margin:20px 0;
+}
+
+.receiptRow{
+display:flex;
+justify-content:space-between;
+padding:8px 0;
+border-bottom:1px dotted #ffd1e6;
+font-size:16px;
+color:#555;
+}
+
+.receiptTotal{
+display:flex;
+justify-content:space-between;
+margin-top:15px;
+padding-top:15px;
+border-top:3px dashed #ff9cc9;
+font-size:24px;
+font-weight:bold;
+color:#ff4f9a;
+}
+
+.barcode{
+height:80px;
+margin-top:20px;
+background:
+repeating-linear-gradient(
+90deg,
+#000 0px,
+#000 2px,
+transparent 2px,
+transparent 5px
+);
+}
+
+.secretText{
+text-align:center;
+margin-top:10px;
+font-size:12px;
+letter-spacing:4px;
+color:#ff5ca8;
+font-weight:bold;
+}
+
+.receipt p{
+margin-bottom:10px;
+font-size:18px;
+}
+
+.receipt button{
+width:100%;
+margin-top:20px;
+padding:15px;
+border:none;
+border-radius:15px;
+background:linear-gradient(
+90deg,
+#ff5ca8,
+#ff85c1
+);
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* GAME OVER */
+
+#gameOver{
+display:none;
+width:100%;
+height:100vh;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,0.85);
+color:white;
+flex-direction:column;
+text-align:center;
+}
+
+#gameOver h1{
+font-size:80px;
+color:rgb(227, 117, 181);
+margin-bottom:20px;
+}
+
+.retry{
+padding:20px 35px;
+font-size:24px;
+border:none;
+border-radius:20px;
+background:rgb(243, 126, 188);
+color:white;
+cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+
+<!-- START -->
+
+<div id="startScreen">
+
+<div class="startBox">
+
+<h1>🍓 HONEY BERRY CAFÉ</h1>
+
+<p>☕ Sweet Drinks • Delicious Desserts • QRIS Payment 💳</p>
+
+<button class="startBtn" onclick="goName()">
+START GAME
+</button>
+
+</div>
+
+</div>
+
+<!-- NAMA PEMBELI -->
+
+<div id="nameScreen" style="display:none; width:100%; height:100vh; justify-content:center; align-items:center;">
+
+<div class="startBox">
+
+<h1>👤 Nama Pembeli</h1>
+
+<input
+type="text"
+id="buyerName"
+placeholder="Masukkan Nama Pembeli"
+style="width:100%;padding:15px;font-size:20px;border-radius:15px;border:2px solid pink;margin:20px 0;">
+
+<button class="startBtn" onclick="goPin()">
+LANJUT
+</button>
+
+</div>
+
+</div>
+
+<!-- BUAT PIN -->
+
+<div id="pinScreen" style="display:none; width:100%; height:100vh; justify-content:center; align-items:center;">
+
+<div class="startBox">
+
+<h1>🔒 Buat PIN</h1>
+
+<input
+type="password"
+id="userPin"
+maxlength="6"
+placeholder="6 Digit PIN"
+style="width:100%;padding:15px;font-size:20px;border-radius:15px;border:2px solid pink;margin:20px 0;">
+
+<button class="startBtn" onclick="startGame()">
+MULAI GAME
+</button>
+
+</div>
+
+</div>
+
+<!-- GAME -->
+
+<div id="gameScreen">
+
+<header>
+
+<div id="levelText">🟢 LEVEL 1</div>
+
+<div id="budgetText">💰 Budget: Rp50.000</div>
+<div id="timerText">⏰ 30 Detik</div>
+
+<div id="itemText">🛍️ 10 Barang</div>
+
+</header>
+
+<div class="cart">
+
+<h1>🛒 Keranjang</h1>
+
+<div id="cartItems"></div>
+
+<button class="checkout" onclick="goPayment()">
+💳 Checkout
+</button>
+
+</div>
+
+<div class="market" id="market"></div>
+
+</div>
+
+<!-- PAYMENT -->
+
+<div id="paymentScreen">
+
+<div class="paymentBox">
+
+<h1>💳 QRIS PAYMENT</h1>
+
+<div class="qris"></div>
+
+<h2>Total Belanja:</h2>
+
+<h1 id="showTotal">Rp0</h1>
+
+<p>Masukkan PIN Pembayaran</p>
+
+<input type="password" id="pin" maxlength="6">
+
+<br>
+
+<button class="payBtn" onclick="payNow()">
+Bayar
+</button>
+
+</div>
+
+</div>
+
+<!-- RECEIPT -->
+
+<div id="receiptScreen">
+
+<div class="receipt">
+
+<div class="receiptHeader">
+<h1>Secret.</h1>
+<p style="color:#ec8ab8;">HONEY BERRY CAFÉ</p>
+</div>
+
+<p><b>Nama:</b> <span id="receiptName"></span></p>
+
+<div id="receiptItems" class="receiptItems"></div>
+
+<div class="receiptTotal">
+<span>TOTAL</span>
+<span>Rp <span id="receiptTotal"></span></span>
+</div>
+
+<p style="text-align:center;color:#ff5ca8;margin-top:15px;">
+READY TO LEVEL UP?
+</p>
+
+<div class="barcode"></div>
+
+<div class="secretText">
+HONEY BERRY CAFÉ
+</div>
+
+<button onclick="nextLevel()">
+NEXT LEVEL
+</button>
+
+</div>
+
+</div>
+
+<!-- GAME OVER -->
+
+<div id="gameOver">
+
+<h1>💀 GAME OVER</h1>
+
+<p id="gameOverText"></p>
+
+<br>
+
+<button class="retry" onclick="restartGame()">
+ULANG GAME
+</button>
+
+</div>
+
+<script>
+
+let buyerName="";
+let savedPin="";
+let level=1;
+let total=0;
+let cart=[];
+let budget=50000;
+let time=30;
+let timerInterval;
+let gameOverReason="";
+
+
+const allItems = [
+
+
+
+{emoji:"🍪",name:"Cookies",price:25000},
+{emoji:"🍩",name:"Donat Coklat",price:15000},
+{emoji:"🧁",name:"Cupcake",price:20000},
+{emoji:"🥐",name:"Croissant",price:35000},
+{emoji:"🧇",name:"Waffle Mini",price:30000},
+
+{emoji:"🥤",name:"Iced Tea",price:20000},
+{emoji:"☕",name:"Espresso",price:32000},
+{emoji:"🍫",name:"Chocolate Milk",price:15000},
+{emoji:"🍓",name:"Strawberry Milk",price:18000},
+{emoji:"🧋",name:"Boba Original",price:18000},
+
+{emoji:"🍰",name:"Red Velvet",price:25000},
+{emoji:"🥪",name:"Sandwich",price:20000},
+{emoji:"🍟",name:"French Fries",price:15000},
+{emoji:"🍕",name:"Pizza",price:50000},
+{emoji:"🍔",name:"Burger",price:45000},
+
+{emoji:"🧋",name:"Milk Tea",price:18000},
+{emoji:"🍵",name:"Matcha Latte",price:20000},
+{emoji:"🥛",name:"Americano",price:17000},
+{emoji:"🧃",name:"Butterscotch Sea Salt Latte",price:30000},
+{emoji:"🥤",name:"Caramel Macchiato",price:30000},
+{emoji:"☕",name:"Aren Latte",price:25000},
+
+{emoji:"🍝",name:"Spaghetti Carbonara",price:40000},
+{emoji:"🍗",name:"Fried Chicken",price:35000},
+{emoji:"🌭",name:"Hot Dog",price:25000},
+{emoji:"🥞",name:"Pancake",price:30000},
+{emoji:"🍤",name:"Shrimp Roll",price:45000},
+
+{emoji:"🍹",name:"Mojito Mocktail",price:35000},
+{emoji:"🥭",name:"Mango Smoothie",price:28000},
+{emoji:"🍋",name:"Lemon Tea",price:20000},
+{emoji:"🍪",name:"Cookies & Cream Shake",price:35000},
+{emoji:"🍓",name:"Berry Smoothie",price:40000},
+
+{emoji:"🥩",name:"Steak",price:65000},
+{emoji:"🍣",name:"Sushi Roll",price:55000},
+{emoji:"🧀",name:"Cheese Burger",price:50000},
+{emoji:"🍜",name:"Ramen",price:45000},
+{emoji:"🥗",name:"Caesar Salad",price:35000},
+
+{emoji:"🥥",name:"Coconut Latte",price:35000},
+{emoji:"🍯",name:"Honey Lemon Tea",price:25000},
+{emoji:"🍫",name:"Mocha Latte",price:35000},
+{emoji:"🧋",name:"Brown Sugar Boba",price:30000},
+{emoji:"🍑",name:"Peach Tea",price:25000},
+
+{emoji:"🦞",name:"Lobster Roll",price:80000},
+{emoji:"🍖",name:"BBQ Ribs",price:75000},
+{emoji:"🍛",name:"Chicken Katsu Curry",price:55000},
+{emoji:"🥟",name:"Dumpling",price:40000},
+{emoji:"🌮",name:"Taco",price:45000},
+
+{emoji:"☕",name:"Signature Coffee",price:45000},
+{emoji:"🍹",name:"Blue Lagoon",price:40000},
+{emoji:"🧋",name:"Taro Milk Tea",price:35000},
+{emoji:"🍓",name:"Strawberry Smoothie",price:40000},
+{emoji:"🍫",name:"Premium Chocolate",price:45000}
+
+];
+
+function goName(){
+
+document.getElementById("startScreen").style.display="none";
+
+document.getElementById("nameScreen").style.display="flex";
+
+}
+
+function goPin(){
+
+buyerName=
+document.getElementById("buyerName").value.trim();
+
+if(buyerName===""){
+
+alert("Masukkan nama pembeli");
+return;
+
+}
+
+document.getElementById("nameScreen").style.display="none";
+
+document.getElementById("pinScreen").style.display="flex";
+
+}
+function startGame(){
+
+savedPin=
+document.getElementById("userPin").value;
+
+if(!/^\d{6}$/.test(savedPin)){
+
+alert("PIN harus 6 angka");
+return;
+
+}
+
+document.getElementById("pinScreen").style.display="none";
+
+document.getElementById("gameScreen").style.display="block";
+
+loadLevel();
+startTimer();
+
+}
+
+function loadLevel(){
+
+let itemCount;
+
+if(level===1){
+
+itemCount=10;
+budget=50000;
+time=30;
+
+}else if(level===2){
+
+itemCount=20;
+budget=85000;
+time=60;
+
+}else if(level===3){
+
+itemCount=30;
+budget=120000;
+time=90;
+
+}else if(level===4){
+
+itemCount=40;
+budget=170000;
+time=120;
+
+}else{
+
+itemCount=50;
+budget=230000;
+time=150;
+
+}
+
+document.getElementById("levelText").innerHTML=
+`🟢 LEVEL ${level}`;
+
+document.getElementById("budgetText").innerHTML=
+`💰 Budget: Rp${budget.toLocaleString("id-ID")}`;
+
+document.getElementById("itemText").innerHTML=
+`🛍️ ${itemCount} Barang`;
+
+let market=document.getElementById("market");
+
+market.innerHTML="";
+
+for (let i = 0; i < allItems.length; i++) {
+    let item = allItems[i];
+    market.innerHTML += `
+        <div class="item">
+            <div class="emoji">${item.emoji}</div>
+            <h2>${item.name}</h2>
+            <p>Rp${item.price.toLocaleString("id-ID")}</p>
+            <button onclick="addItem('${item.name}',${item.price})">
+                Ambil
+            </button>
+        </div>`;
+}
+
+}
+
+
+function startTimer(){
+
+clearInterval(timerInterval);
+
+document.getElementById("timerText").innerHTML=
+`⏰ ${time} Detik`;
+
+timerInterval=setInterval(()=>{
+
+time--;
+
+document.getElementById("timerText").innerHTML=
+`⏰ ${time} Detik`;
+
+if(time<=0){
+
+clearInterval(timerInterval);
+
+gameOverReason =
+"⏰ Waktu habis! Kamu terlalu lama berbelanja.";
+
+showGameOver();
+
+}
+
+},1000);
+
+}
+
+function addItem(name, price){
+
+cart.push({
+name:name,
+price:price
+});
+
+total += price;
+
+let div=document.createElement("div");
+
+div.classList.add("cartItem");
+
+div.innerHTML=`✅ ${name} - Rp${price.toLocaleString("id-ID")}`;
+
+document.getElementById("cartItems").appendChild(div);
+
+}
+
+function goPayment(){
+
+if(cart.length===0){
+
+alert("Keranjang masih kosong!");
+return;
+
+}
+
+/* BARU CEK BUDGET SAAT CHECKOUT */
+
+if(total > budget){
+
+gameOverReason =
+`💸 Budget Level ${level} cuma Rp${budget.toLocaleString("id-ID")}!
+
+Total belanja kamu Rp${total.toLocaleString("id-ID")}.
+
+Kamu harus mengulang dari Level 1 😭`;
+
+showGameOver();
+return;
+
+}
+
+/* LOLOS KE PEMBAYARAN */
+
+clearInterval(timerInterval);
+
+document.getElementById("gameScreen").style.display="none";
+
+document.getElementById("paymentScreen").style.display="flex";
+
+document.getElementById("showTotal").innerHTML=
+`Rp ${total.toLocaleString("id-ID")}`;
+
+}
+function payNow(){
+
+let pin=document.getElementById("pin").value;
+
+if(pin!==savedPin){
+
+gameOverReason =
+"🔒 PIN yang dimasukkan salah! Kamu harus mengulang dari Level 1 😭";
+
+showGameOver();
+return;
+
+}
+
+document.getElementById("paymentScreen").style.display="none";
+document.getElementById("receiptScreen").style.display="flex";
+
+let html="";
+
+cart.forEach(item=>{
+
+html+=`
+<div class="receiptRow">
+<span>${item.name}</span>
+<span>Rp${item.price.toLocaleString("id-ID")}</span>
+</div>
+`;
+
+});
+
+document.getElementById("receiptItems").innerHTML=html;
+document.getElementById("receiptName").innerHTML=buyerName;
+document.getElementById("receiptTotal").innerHTML=
+total.toLocaleString("id-ID");
+
+}
+
+function nextLevel(){
+level++;
+
+if(level>5){
+
+alert("🎉 SELAMAT! Kamu berhasil menyelesaikan semua level!");
+location.reload();
+return;
+
+}
+
+total=0;
+cart=[];
+
+document.getElementById("cartItems").innerHTML="";
+
+document.getElementById("receiptScreen").style.display="none";
+
+document.getElementById("gameScreen").style.display="block";
+
+if(level===1){
+
+time=30;
+
+}else if(level===2){
+
+time=60;
+
+}else if(level===3){
+
+time=90;
+
+}else if(level===4){
+
+time=120;
+
+}else{
+
+time=150;
+
+}
+
+loadLevel();
+startTimer();
+
+}
+
+function showGameOver(){
+
+clearInterval(timerInterval);
+
+document.getElementById("gameScreen").style.display="none";
+document.getElementById("paymentScreen").style.display="none";
+document.getElementById("receiptScreen").style.display="none";
+
+document.getElementById("gameOverText").innerHTML=
+gameOverReason;
+
+document.getElementById("gameOver").style.display="flex";
+
+}
+
+function restartGame(){
+
+level = 1;
+budget = 50000;
+total = 0;
+cart = [];
+
+document.getElementById("cartItems").innerHTML = "";
+
+document.getElementById("gameOver").style.display = "none";
+
+document.getElementById("gameScreen").style.display = "block";
+
+loadLevel();
+startTimer();
+
+}
+
+</script>
+
+</body>
+</html>
