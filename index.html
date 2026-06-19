@@ -5,1096 +5,1396 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🍓 Honey Berry Café</title>
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
+:root {
+  --bg-overlay: rgba(228,96,166,0.15);
+  --pink: #ff4f9a; --pink-dark: #ff2f84; --pink-light: #f79cc9;
+  --card-bg: linear-gradient(180deg,#f79cc9,#f382bc);
+  --panel: rgba(254,145,185,0.92);
+  --text: #fff; --muted: rgba(255,255,255,0.75);
+  --cart-item: #ff6ab0;
+  --header-bg: #ff4f9a;
+  --modal-bg: rgba(0,0,0,0.7);
+  --setting-bg: rgba(255,255,255,0.97);
+  --setting-text: #333;
+  --btn-radius: 20px;
+  --vol-track: #ffb6d9;
+  --coins-color: #f1c40f;
+  --premium-color: #9b59b6;
 }
-
-body{
-background-image:url("background.jpg");
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
-background-attachment:fixed;
-overflow-x:hidden;
+.dark {
+  --bg-overlay: rgba(10,0,20,0.7);
+  --card-bg: linear-gradient(180deg,#5a1a3a,#3a0d25);
+  --panel: rgba(60,10,40,0.97);
+  --cart-item: #7a1a4a;
+  --header-bg: #7a1a4a;
+  --setting-bg: rgba(30,10,25,0.98);
+  --setting-text: #f0d0e0;
+  --vol-track: #7a3060;
 }
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body{background-image:url("background.jpg");background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;overflow-x:hidden;transition:filter .3s;}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-overlay);pointer-events:none;transition:background .3s;}
 
-/* overlay biar tulisan keliatan */
+.screen{width:100%;min-height:100vh;display:none;justify-content:center;align-items:center;}
+.screen.active{display:flex;}
+.startBox{background:var(--panel);padding:50px 60px;border-radius:35px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.25);width:500px;max-width:95vw;}
+.startBox h1{font-size:48px;color:var(--pink-dark);margin-bottom:12px;}
+.startBox p{font-size:16px;margin-bottom:20px;color:var(--setting-text);opacity:.8;}
+.startBtn{padding:18px 38px;font-size:22px;background:linear-gradient(to right,#ff4f9a,#ff2f84);border:none;color:#fff;border-radius:var(--btn-radius);cursor:pointer;transition:.2s;width:100%;margin-top:8px;}
+.startBtn:hover{transform:scale(1.04);filter:brightness(1.08);}
+input[type=text],input[type=password]{width:100%;padding:14px;font-size:19px;border-radius:15px;border:2px solid pink;margin:14px 0;text-align:center;}
 
-body::before{
-content:'';
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(228, 96, 166, 0.15);
-pointer-events:none;
-}
+#gameScreen{display:none;flex-direction:column;}
+header{width:100%;background:var(--header-bg);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 20px;gap:8px;color:#fff;font-size:16px;font-weight:bold;position:sticky;top:0;z-index:100;box-shadow:0 5px 15px rgba(224,84,140,0.2);}
+.hdr-group{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.hdr-btn{background:rgba(255,255,255,0.22);border:none;color:#fff;border-radius:12px;padding:7px 14px;font-size:15px;font-weight:bold;cursor:pointer;transition:.15s;}
+.hdr-btn:hover{background:rgba(255,255,255,0.38);}
+.coins-badge{background:var(--coins-color);color:#333;border-radius:12px;padding:5px 12px;font-size:15px;font-weight:bold;cursor:pointer;}
+.premium-badge{background:var(--premium-color);color:#fff;border-radius:12px;padding:5px 12px;font-size:14px;font-weight:bold;}
 
-/* START */
+#eventBanner{display:none;width:100%;background:linear-gradient(90deg,#ff2f84,#ff8c00);color:#fff;text-align:center;padding:9px 20px;font-size:17px;font-weight:bold;position:sticky;top:64px;z-index:99;animation:pulseB 1s infinite alternate;}
+@keyframes pulseB{from{opacity:1;}to{opacity:.75;};}
 
-#startScreen{
-width:100%;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
+.category-bar{display:flex;gap:10px;flex-wrap:wrap;padding:16px 40px 0;padding-right:320px;}
+.cat-btn{padding:9px 18px;border:none;border-radius:20px;font-size:14px;font-weight:bold;cursor:pointer;background:rgba(255,182,217,0.55);color:#c0195a;transition:.2s;}
+.cat-btn.active,.cat-btn:hover{background:#ff4f9a;color:#fff;transform:scale(1.04);}
 
-.startBox{
-background:rgba(254, 145, 185, 0.92);
-padding:60px;
-border-radius:35px;
-text-align:center;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-width:500px;
-}
+.market{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px;padding:16px 40px 40px;padding-right:320px;}
+.item{background:var(--card-bg);border-radius:26px;padding:22px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.15);transition:.22s;}
+.item:hover{transform:translateY(-6px);}
+.item.trap{background:linear-gradient(180deg,#c0392b,#7a1010);}
+.item.mystery{background:linear-gradient(180deg,#6c3483,#9b59b6);}
+.emoji{font-size:48px;margin-bottom:8px;}
+.item h2{font-size:19px;margin-bottom:6px;color:#fff;}
+.price-tag{font-size:17px;margin-bottom:10px;color:#fff;min-height:24px;}
+.item button{background:#fff;border:none;padding:10px 18px;border-radius:14px;font-size:16px;color:#ff5ca8;font-weight:bold;cursor:pointer;}
+.item.trap button{color:#c0392b;} .item.mystery button{color:#6c3483;}
 
-.startBox h1{
-font-size:55px;
-color:#ff2f84;
-margin-bottom:20px;
-}
+.cart{position:fixed;right:20px;top:100px;width:280px;background:var(--card-bg);border-radius:28px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.18);color:#fff;z-index:99;}
+.cart h2{font-size:26px;margin-bottom:8px;}
+.cart-meta{font-size:13px;color:var(--muted);margin-bottom:8px;}
+#cartItems{max-height:190px;overflow:auto;}
+.cartItem{background:var(--cart-item);padding:9px 10px;border-radius:11px;margin-bottom:7px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
+.remove-btn{background:#fff;border:none;border-radius:7px;padding:2px 7px;color:#ff5ca8;font-weight:bold;cursor:pointer;font-size:12px;}
+.cart-row{display:flex;justify-content:space-between;font-size:14px;font-weight:bold;padding:5px 0;border-top:1px dashed rgba(255,255,255,.4);}
+.checkout{width:100%;padding:13px;border:none;border-radius:16px;background:#fff;color:#ff5ca8;font-size:18px;font-weight:bold;cursor:pointer;margin-top:10px;}
 
-.startBox p{
-font-size:24px;
-margin-bottom:25px;
-}
+.overlay{position:fixed;inset:0;z-index:500;display:none;justify-content:center;align-items:center;background:var(--modal-bg);backdrop-filter:blur(8px);}
+.overlay.show{display:flex;}
+.modal-box{background:var(--setting-bg);border-radius:30px;padding:36px 32px;width:min(92vw,480px);box-shadow:0 20px 60px rgba(0,0,0,.35);position:relative;max-height:90vh;overflow-y:auto;}
+.modal-box h2{color:var(--pink-dark);font-size:28px;margin-bottom:18px;text-align:center;}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:24px;cursor:pointer;color:#aaa;}
+.modal-close:hover{color:#ff4f9a;}
 
-.startBtn{
-padding:20px 40px;
-font-size:25px;
-background:linear-gradient(to right,#ff4f9a,#ff2f84);
-border:none;
-color:rgb(255, 197, 224);
-border-radius:20px;
-cursor:pointer;
-transition:.2s;
-}
+.pause-btn-row{display:grid;gap:12px;margin-top:8px;}
+.pause-btn{width:100%;padding:15px;border:none;border-radius:16px;font-size:18px;font-weight:bold;cursor:pointer;transition:.15s;}
+.pause-btn:hover{filter:brightness(1.1);transform:translateY(-2px);}
+.pb-resume{background:linear-gradient(to right,#27ae60,#2ecc71);color:#fff;}
+.pb-setting{background:linear-gradient(to right,#2980b9,#3498db);color:#fff;}
+.pb-topup{background:linear-gradient(to right,var(--coins-color),#e67e22);color:#333;}
+.pb-premium{background:linear-gradient(to right,#8e44ad,var(--premium-color));color:#fff;}
+.pb-quit{background:linear-gradient(to right,#c0392b,#e74c3c);color:#fff;}
 
-.startBtn:hover{
-transform:scale(1.05);
-}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(200,150,180,.25);}
+.setting-label{font-size:16px;font-weight:bold;color:var(--setting-text);}
+.setting-label small{display:block;font-size:12px;font-weight:normal;opacity:.6;}
+input[type=range]{-webkit-appearance:none;width:130px;height:7px;border-radius:4px;background:var(--vol-track);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--pink);cursor:pointer;}
+.toggle-switch{position:relative;width:54px;height:28px;display:inline-block;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:28px;cursor:pointer;transition:.3s;}
+.toggle-slider:before{content:"";position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle-switch input:checked+.toggle-slider{background:var(--pink);}
+.toggle-switch input:checked+.toggle-slider:before{transform:translateX(26px);}
+.diff-row{display:flex;gap:8px;margin-top:6px;}
+.diff-btn{flex:1;padding:10px;border:2px solid #ddd;border-radius:12px;background:#f5f5f5;cursor:pointer;font-size:14px;font-weight:bold;color:#666;transition:.15s;}
+.diff-btn.active,.diff-btn:hover{border-color:var(--pink);background:var(--pink);color:#fff;}
+.lang-row{display:flex;gap:8px;margin-top:6px;}
+.lang-btn{flex:1;padding:10px;border:2px solid #ddd;border-radius:12px;background:#f5f5f5;cursor:pointer;font-size:15px;font-weight:bold;color:#666;transition:.15s;}
+.lang-btn.active,.lang-btn:hover{border-color:var(--pink);background:var(--pink);color:#fff;}
 
-/* GAME */
+.shop-tabs{display:flex;gap:0;margin-bottom:20px;border-radius:14px;overflow:hidden;}
+.shop-tab{flex:1;padding:12px;border:none;font-size:15px;font-weight:bold;cursor:pointer;background:#eee;color:#666;transition:.2s;}
+.shop-tab.active{background:var(--pink);color:#fff;}
+.shop-panel{display:none;} .shop-panel.active{display:block;}
+.coin-packs{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.coin-pack{border:2px solid #ffd6ec;border-radius:18px;padding:16px;text-align:center;cursor:pointer;transition:.2s;background:#fff8fc;}
+.coin-pack:hover{border-color:var(--pink);transform:scale(1.03);}
+.coin-pack .coins{font-size:28px;font-weight:bold;color:var(--coins-color);}
+.coin-pack .pack-label{font-size:13px;color:#888;margin:4px 0;}
+.coin-pack .pack-price{font-size:15px;font-weight:bold;color:var(--pink-dark);}
+.coin-pack.popular{border-color:#ff4f9a;background:linear-gradient(135deg,#fff0f8,#ffe0f0);}
+.coin-pack .popular-tag{background:var(--pink);color:#fff;font-size:11px;border-radius:8px;padding:2px 8px;display:inline-block;margin-bottom:6px;}
+.premium-card{border-radius:20px;background:linear-gradient(135deg,#f3e6ff,#e8d0ff);border:2px solid var(--premium-color);padding:22px;margin-bottom:14px;cursor:pointer;transition:.2s;position:relative;}
+.premium-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(142,68,173,.25);}
+.premium-card h3{color:#6c3483;font-size:20px;margin-bottom:6px;}
+.premium-card ul{color:#555;font-size:14px;padding-left:18px;margin-bottom:12px;}
+.premium-card .prem-price{font-size:22px;font-weight:bold;color:#8e44ad;}
+.premium-card.owned{opacity:.6;cursor:default;}
+.premium-card.owned::after{content:"✅ Dimiliki";position:absolute;top:14px;right:14px;background:#27ae60;color:#fff;border-radius:10px;padding:4px 10px;font-size:13px;font-weight:bold;}
+.coins-display{text-align:center;font-size:18px;font-weight:bold;color:var(--coins-color);margin-bottom:16px;}
+.buy-btn{width:100%;padding:13px;border:none;border-radius:14px;background:linear-gradient(to right,#ff4f9a,#ff2f84);color:#fff;font-size:17px;font-weight:bold;cursor:pointer;margin-top:8px;transition:.15s;}
+.buy-btn:hover{filter:brightness(1.08);}
+.buy-btn:disabled{opacity:.5;cursor:default;}
 
-#gameScreen{
-display:none;
-}
+#paymentScreen{flex-direction:column;}
+.paymentBox{background:rgba(255,255,255,0.96);padding:36px;border-radius:32px;text-align:center;width:min(92vw,420px);box-shadow:0 10px 25px rgba(0,0,0,0.15);}
+.paymentBox h1{color:var(--pink-dark);margin-bottom:10px;font-size:32px;}
+.qris{width:180px;height:180px;margin:auto auto 14px;border-radius:14px;background:repeating-linear-gradient(45deg,#000,#000 10px,#fff 10px,#fff 20px);}
+#summaryBox{background:#fff0f7;border-radius:14px;padding:13px;margin:10px 0;text-align:left;font-size:14px;max-height:140px;overflow:auto;}
+.summary-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dotted #ffd1e6;}
+.payBtn{margin-top:16px;padding:14px 28px;border:none;border-radius:14px;background:var(--pink-dark);color:#fff;font-size:20px;cursor:pointer;width:100%;}
+#pinAttemptsLeft{color:#c0392b;font-size:14px;margin-top:7px;font-weight:bold;}
+#coinBuyTime{margin-top:14px;}
 
-header{
-width:100%;
-height:90px;
-background:#ff4f9a;
-display:flex;
-justify-content:space-around;
-align-items:center;
-color:white;
-font-size:20px;
-font-weight:bold;
-position:sticky;
-top:0;
-z-index:100;
-box-shadow:0 5px 15px rgba(224, 84, 140, 0.2);
-}
+#receiptScreen{flex-direction:column;}
+.receipt{background:#fff;width:min(92vw,400px);padding:22px;border-radius:22px;box-shadow:0 15px 35px rgba(0,0,0,.2);position:relative;overflow:hidden;}
+.receipt::before{content:"🍓 HONEY BERRY CAFÉ 🍓";display:block;text-align:center;font-size:13px;font-weight:bold;letter-spacing:2px;color:#ff5ca8;padding-bottom:12px;border-bottom:2px dashed #ffb6d9;margin-bottom:12px;}
+.receiptHeader{text-align:center;margin-bottom:12px;}
+.receiptHeader h1{font-size:32px;color:#ff5ca8;margin-bottom:4px;}
+.receiptItems{margin:12px 0;}
+.receiptRow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dotted #ffd1e6;font-size:14px;color:#555;}
+.receiptTotal{display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:3px dashed #ff9cc9;font-size:20px;font-weight:bold;color:#ff4f9a;}
+.barcode{height:50px;margin-top:14px;background:repeating-linear-gradient(90deg,#000 0,#000 2px,transparent 2px,transparent 5px);}
+.star-box{text-align:center;font-size:34px;margin:10px 0;}
+.star-label{color:#ff5ca8;font-weight:bold;font-size:16px;text-align:center;}
+.receipt button{width:100%;margin-top:14px;padding:13px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5ca8,#ff85c1);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;}
 
-.market{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:25px;
-padding:40px;
-padding-right:340px;
-}
+#gameOver{flex-direction:column;background:rgba(0,0,0,0.88);}
+#gameOver h1{font-size:62px;color:rgb(227,117,181);margin-bottom:12px;}
+#gameOverText{font-size:17px;max-width:440px;line-height:1.65;padding:0 20px;color:#fff;text-align:center;}
+.retry{padding:16px 30px;font-size:20px;border:none;border-radius:18px;background:rgb(243,126,188);color:#fff;cursor:pointer;margin-top:18px;}
 
+#winAllScreen{flex-direction:column;background:rgba(0,0,0,0.88);}
+#winAllScreen h1{font-size:52px;color:#ffd700;margin-bottom:18px;text-align:center;}
 
-.item{
-background:linear-gradient(
-180deg,
-#f79cc9,
-#f382bc
-);
-border-radius:28px;
-padding:25px;
-text-align:center;
-box-shadow:0 8px 20px rgba(0,0,0,0.15);
-transition:.25s;
-}
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(30,15,25,.9);color:#fff;padding:13px 28px;border-radius:16px;font-size:16px;font-weight:bold;z-index:999;opacity:0;transition:all .4s;pointer-events:none;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-.item:hover{
-transform:translateY(-8px);
-}
-
-.emoji{
-font-size:55px;
-margin-bottom:10px;
-}
-
-.item h2{
-font-size:28px;
-margin-bottom:8px;
-color:white;
-}
-
-.item p{
-font-size:20px;
-margin-bottom:12px;
-color:white;
-}
-
-.item button{
-background:white;
-border:none;
-padding:14px 25px;
-border-radius:16px;
-font-size:20px;
-color:#ff5ca8;
-font-weight:bold;
-cursor:pointer;
-}
-.cart{
-position:fixed;
-right:25px;
-top:120px;
-width:290px;
-
-background:linear-gradient(
-180deg,
-#f79cc9,
-#f382bc
-);
-
-border-radius:30px;
-padding:25px;
-
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
-
-color:white;
-z-index:999;
-}
-
-.cart h1{
-font-size:35px;
-margin-bottom:20px;
-color:white;
-}
-
-#cartItems{
-max-height:230px;
-overflow:auto;
-}
-
-.cartItem{
-background:#ff6ab0;
-padding:12px;
-border-radius:12px;
-margin-bottom:10px;
-font-size:18px;
-}
-
-.checkout{
-width:100%;
-padding:18px;
-border:none;
-border-radius:18px;
-background:white;
-color:#ff5ca8;
-font-size:22px;
-font-weight:bold;
-cursor:pointer;
-margin-top:20px;
-}
-
-/* PAYMENT */
-
-#paymentScreen{
-display:none;
-width:100%;
-height:100vh;
-justify-content:center;
-align-items:center;
-}
-
-.paymentBox{
-background:rgba(255,255,255,0.95);
-padding:40px;
-border-radius:35px;
-text-align:center;
-width:420px;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
-
-.paymentBox h1{
-color:#ff2f84;
-margin-bottom:20px;
-font-size:40px;
-}
-
-.qris{
-width:220px;
-height:220px;
-margin:auto;
-margin-bottom:20px;
-border-radius:15px;
-background:
-repeating-linear-gradient(
-45deg,
-black,
-black 10px,
-white 10px,
-white 20px
-);
-}
-
-.paymentBox input{
-width:220px;
-padding:15px;
-font-size:28px;
-text-align:center;
-border-radius:15px;
-border:2px solid pink;
-margin-top:15px;
-}
-
-.payBtn{
-margin-top:20px;
-padding:16px 30px;
-border:none;
-border-radius:15px;
-background:#ff2f84;
-color:white;
-font-size:22px;
-cursor:pointer;
-}
-
-/* RECEIPT */
-
-#receiptScreen{
-display:none;
-width:100%;
-height:100vh;
-justify-content:center;
-align-items:center;
-}
-
-.receipt{
-background:#fff;
-width:420px;
-padding:25px;
-border-radius:25px;
-box-shadow:0 15px 35px rgba(0,0,0,.2);
-position:relative;
-overflow:hidden;
-}
-
-.receipt::before{
-content:"🍓 HONEY BERRY CAFÉ 🍓";
-display:block;
-text-align:center;
-font-size:14px;
-font-weight:bold;
-letter-spacing:2px;
-color:#ff5ca8;
-padding-bottom:15px;
-border-bottom:2px dashed #ffb6d9;
-margin-bottom:15px;
-}
-
-.receiptHeader{
-text-align:center;
-margin-bottom:15px;
-}
-
-.receiptHeader h1{
-font-size:42px;
-color:#ff5ca8;
-margin-bottom:5px;
-background:none;
-}
-
-.receiptHeader p{
-color:#999;
-font-size:14px;
-}
-
-.receiptItems{
-margin:20px 0;
-}
-
-.receiptRow{
-display:flex;
-justify-content:space-between;
-padding:8px 0;
-border-bottom:1px dotted #ffd1e6;
-font-size:16px;
-color:#555;
-}
-
-.receiptTotal{
-display:flex;
-justify-content:space-between;
-margin-top:15px;
-padding-top:15px;
-border-top:3px dashed #ff9cc9;
-font-size:24px;
-font-weight:bold;
-color:#ff4f9a;
-}
-
-.barcode{
-height:80px;
-margin-top:20px;
-background:
-repeating-linear-gradient(
-90deg,
-#000 0px,
-#000 2px,
-transparent 2px,
-transparent 5px
-);
-}
-
-.secretText{
-text-align:center;
-margin-top:10px;
-font-size:12px;
-letter-spacing:4px;
-color:#ff5ca8;
-font-weight:bold;
-}
-
-.receipt p{
-margin-bottom:10px;
-font-size:18px;
-}
-
-.receipt button{
-width:100%;
-margin-top:20px;
-padding:15px;
-border:none;
-border-radius:15px;
-background:linear-gradient(
-90deg,
-#ff5ca8,
-#ff85c1
-);
-color:white;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-}
-
-/* GAME OVER */
-
-#gameOver{
-display:none;
-width:100%;
-height:100vh;
-justify-content:center;
-align-items:center;
-background:rgba(0,0,0,0.85);
-color:white;
-flex-direction:column;
-text-align:center;
-}
-
-#gameOver h1{
-font-size:80px;
-color:rgb(227, 117, 181);
-margin-bottom:20px;
-}
-
-.retry{
-padding:20px 35px;
-font-size:24px;
-border:none;
-border-radius:20px;
-background:rgb(243, 126, 188);
-color:white;
-cursor:pointer;
-}
-
+.coin-menu-item{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff8fc,#fff0f8);border:2px solid #ffd6ec;border-radius:16px;padding:12px 14px;transition:.2s;}
+.coin-menu-item:hover{border-color:var(--pink);transform:translateX(3px);}
+.coin-menu-item.owned{border-color:#27ae60;background:linear-gradient(135deg,#f0fff4,#e0f8e8);}
+.coin-menu-item.locked{opacity:.6;border-color:#ddd;background:#f9f9f9;}
+.coin-menu-emoji{font-size:32px;flex-shrink:0;}
+.coin-menu-info{flex:1;}
+.coin-menu-name{font-weight:bold;font-size:15px;color:#333;}
+.coin-menu-desc{font-size:12px;color:#888;margin-top:2px;}
+.coin-menu-cost{font-size:13px;font-weight:bold;color:var(--coins-color);margin-top:3px;}
+.coin-menu-btn{padding:8px 14px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap;background:linear-gradient(to right,#ff4f9a,#ff2f84);color:#fff;transition:.15s;}
+.coin-menu-btn:hover{filter:brightness(1.1);}
+.coin-menu-btn.btn-owned{background:linear-gradient(to right,#27ae60,#2ecc71);}
+.coin-menu-btn:disabled{opacity:.5;cursor:default;}
 </style>
 </head>
 <body>
+<div id="toast"></div>
 
-
-<!-- START -->
-
-<div id="startScreen">
-
-<div class="startBox">
-
-<h1>🍓 HONEY BERRY CAFÉ</h1>
-
-<button class="startBtn" onclick="goName()">
-START GAME
-</button>
-
+<div id="startScreen" class="screen active">
+  <div class="startBox">
+    <h1>🍓 HONEY BERRY CAFÉ</h1>
+    <p>Belanja cerdas, jangan over budget!<br>5 Level penuh tantangan menanti 🔥</p>
+    <button class="startBtn" onclick="goName()">▶ START GAME</button>
+  </div>
 </div>
 
+<div id="nameScreen" class="screen">
+  <div class="startBox">
+    <h1>👤 <span data-t="nameTitle">Nama Pelanggan</span></h1>
+    <input type="text" id="buyerName" data-ph="namePh" placeholder="Masukkan Nama Pembeli">
+    <button class="startBtn" onclick="goPin()"><span data-t="next">LANJUT</span></button>
+  </div>
 </div>
 
-<!-- NAMA PEMBELI -->
-
-<div id="nameScreen" style="display:none; width:100%; height:100vh; justify-content:center; align-items:center;">
-
-<div class="startBox">
-
-<h1>👤 Nama Pelanggan</h1>
-
-<input
-type="text"
-id="buyerName"
-placeholder="Masukkan Nama Pembeli"
-style="width:100%;padding:15px;font-size:20px;border-radius:15px;border:2px solid pink;margin:20px 0;">
-
-<button class="startBtn" onclick="goPin()">
-LANJUT
-</button>
-
+<div id="pinScreen" class="screen">
+  <div class="startBox">
+    <h1>🔒 <span data-t="pinTitle">Buat PIN</span></h1>
+    <p data-t="pinHint" style="font-size:15px;color:#c0195a;">PIN 6 digit — hafalkan baik-baik!</p>
+    <input type="password" id="userPin" maxlength="6" placeholder="6 Digit PIN">
+    <button class="startBtn" onclick="startGame()"><span data-t="startPlay">MULAI GAME</span></button>
+  </div>
 </div>
-
-</div>
-
-<!-- BUAT PIN -->
-
-<div id="pinScreen" style="display:none; width:100%; height:100vh; justify-content:center; align-items:center;">
-
-<div class="startBox">
-
-<h1>🔒 Buat PIN</h1>
-
-<input
-type="password"
-id="userPin"
-maxlength="6"
-placeholder="6 Digit PIN"
-style="width:100%;padding:15px;font-size:20px;border-radius:15px;border:2px solid pink;margin:20px 0;">
-
-<button class="startBtn" onclick="startGame()">
-MULAI GAME
-</button>
-
-</div>
-
-</div>
-
-<!-- GAME -->
 
 <div id="gameScreen">
-
-<header>
-
-<div id="levelText">🟢 LEVEL 1</div>
-
-<div id="budgetText">💰 Budget: Rp50.000</div>
-<div id="timerText">⏰ 30 Detik</div>
-
-<div id="itemText">🛍️ 10 Barang</div>
-
-</header>
-
-<div class="cart">
-
-<h1>🛒 Keranjang</h1>
-
-<div id="cartItems"></div>
-
-<button class="checkout" onclick="goPayment()">
-💳 Checkout
-</button>
-
+  <header>
+    <div class="hdr-group">
+      <span id="levelText">🟢 LEVEL 1</span>
+      <span id="budgetText">💰 Rp50.000</span>
+      <span id="timerText">⏰ 30s</span>
+      <span id="livesDisplay">❤️❤️❤️</span>
+      <span id="taxDisplay" style="display:none;font-size:13px;">🧾 +10%</span>
+    </div>
+    <div class="hdr-group">
+      <span class="coins-badge" onclick="openShop('coinmenu')" title="Tukar koin dengan menu mewah! Tersimpan antar level 🍽️">🪙 <span id="coinsCount">0</span> <span id="coinsOwnedBadge" style="display:none;background:rgba(255,255,255,0.3);border-radius:8px;padding:1px 6px;font-size:12px;">🍽️<span id="coinsOwnedCount">0</span></span></span>
+      <span id="premiumBadge" class="premium-badge" style="display:none;">👑 PREMIUM</span>
+      <button class="hdr-btn" onclick="openPause()">⏸ <span data-t="pauseBtn">Pause</span></button>
+    </div>
+  </header>
+  <div id="eventBanner"></div>
+  <div class="category-bar" id="categoryBar"></div>
+  <div class="cart">
+    <h2>🛒 <span data-t="cartTitle">Keranjang</span></h2>
+    <div class="cart-meta" id="cartMeta"></div>
+    <div id="cartItems"></div>
+    <div class="cart-row" style="font-size:13px;color:var(--muted);font-style:italic;border-top:1px dashed rgba(255,255,255,.4);padding-top:8px;margin-top:4px;">
+      <span>💡 Total terlihat saat checkout</span>
+      <span id="cartCount">0 item</span>
+    </div>
+    <button class="checkout" onclick="goPayment()">💳 <span data-t="checkoutBtn">Checkout</span></button>
+  </div>
+  <div class="market" id="market"></div>
 </div>
 
-<div class="market" id="market"></div>
-
+<div id="paymentScreen" class="screen">
+  <div class="paymentBox">
+    <h1>💳 QRIS</h1>
+    <div class="qris"></div>
+    <div id="summaryBox"></div>
+    <div style="background:linear-gradient(135deg,#fff0f8,#ffe0f0);border-radius:14px;padding:14px;margin:10px 0;text-align:center;border:2px dashed #ff9cc9;">
+      <p style="color:#888;font-size:13px;margin-bottom:4px;">💳 Total yang harus dibayar</p>
+      <span id="showTotal" style="font-size:28px;font-weight:900;color:#ff2f84;">Rp0</span>
+      <p style="color:#aaa;font-size:11px;margin-top:4px;">🎁 Item koin sudah gratis tidak dihitung</p>
+    </div>
+    <p style="margin-top:10px;color:#666;" data-t="enterPin">Masukkan PIN Pembayaran</p>
+    <input type="password" id="pin" maxlength="6">
+    <div id="pinAttemptsLeft"></div>
+    <div id="coinBuyTime" style="display:none;">
+      <p style="color:#888;font-size:13px;margin-bottom:6px;" data-t="outOfTime">Waktu habis? Beli +30s!</p>
+      <button class="buy-btn" onclick="buyExtraTime()" id="buyTimeBtn">🪙 30 <span data-t="coinsBuyTime">koin → +30 Detik</span></button>
+    </div>
+    <button class="payBtn" onclick="payNow()"><span data-t="payNow">Bayar</span> 💳</button>
+  </div>
 </div>
 
-<!-- PAYMENT -->
-
-<div id="paymentScreen">
-
-<div class="paymentBox">
-
-<h1>💳 QRIS PAYMENT</h1>
-
-<div class="qris"></div>
-
-<h2>Total Belanja:</h2>
-
-<h1 id="showTotal">Rp0</h1>
-
-<p>Masukkan PIN Pembayaran</p>
-
-<input type="password" id="pin" maxlength="6">
-
-<br>
-
-<button class="payBtn" onclick="payNow()">
-Bayar
-</button>
-
+<div id="receiptScreen" class="screen">
+  <div class="receipt">
+    <div class="receiptHeader"><h1>Secret.</h1><p style="color:#ec8ab8;">HONEY BERRY CAFÉ — Level <span id="receiptLevel"></span></p></div>
+    <p><b data-t="nameLabel">Nama:</b> <span id="receiptName"></span></p>
+    <div id="receiptItems" class="receiptItems"></div>
+    <div id="receiptTaxRow" style="display:none;" class="receiptRow"><span data-t="tax">Pajak 10%</span><span>Rp <span id="receiptTax"></span></span></div>
+    <div class="receiptTotal"><span data-t="totalLabel">TOTAL</span><span>Rp <span id="receiptTotal"></span></span></div>
+    <div class="star-box" id="starBox">⭐⭐⭐</div>
+    <div class="star-label" id="starLabel"></div>
+    <div id="receiptCoinInfo" style="background:linear-gradient(135deg,#fffbe6,#fff3cc);border-radius:12px;padding:10px 14px;margin:10px 0;text-align:center;font-size:13px;border:1px dashed #f1c40f;"></div>
+    <p style="text-align:center;color:#ff5ca8;margin-top:10px;" data-t="readyNext">READY TO LEVEL UP? 🚀</p>
+    <div class="barcode"></div>
+    <button onclick="nextLevel()" data-t="nextLevel">NEXT LEVEL ➡️</button>
+  </div>
 </div>
 
+<div id="gameOver" class="screen">
+  <h1>💀 GAME OVER</h1>
+  <div id="livesRemaining" style="font-size:34px;margin:8px 0;">🖤🖤🖤</div>
+  <p id="gameOverText"></p>
+  <button class="retry" onclick="restartGame()">🔄 <span data-t="retryBtn">ULANG GAME</span></button>
 </div>
 
-<!-- RECEIPT -->
-
-<div id="receiptScreen">
-
-<div class="receipt">
-
-<div class="receiptHeader">
-<h1>Secret.</h1>
-<p style="color:#ec8ab8;">HONEY BERRY CAFÉ</p>
+<div id="winAllScreen" class="screen">
+  <h1>🏆 SELAMAT!</h1>
+  <p style="font-size:20px;max-width:440px;line-height:1.7;color:#fff;text-align:center;" data-t="winAllMsg">Kamu berhasil menyelesaikan semua 5 level!<br>Master belanja sejati! 🎉</p>
+  <button class="retry" style="margin-top:28px;" onclick="location.reload()">🏠 <span data-t="playAgain">Main Lagi</span></button>
 </div>
 
-<p><b>Nama:</b> <span id="receiptName"></span></p>
-
-<div id="receiptItems" class="receiptItems"></div>
-
-<div class="receiptTotal">
-<span>TOTAL</span>
-<span>Rp <span id="receiptTotal"></span></span>
+<!-- PAUSE MODAL -->
+<div id="pauseOverlay" class="overlay">
+  <div class="modal-box" style="max-width:380px;">
+    <button class="modal-close" onclick="closePause()">✕</button>
+    <h2>⏸ <span data-t="pausedTitle">PAUSED</span></h2>
+    <div style="text-align:center;color:#aaa;font-size:14px;margin-bottom:16px;" id="pauseInfo"></div>
+    <div class="pause-btn-row">
+      <button class="pause-btn pb-resume" onclick="resumeGame()">▶ <span data-t="resumeBtn">Lanjut Main</span></button>
+      <button class="pause-btn pb-setting" onclick="openSettings()">⚙️ <span data-t="settingBtn">Pengaturan</span></button>
+      <button class="pause-btn pb-topup" onclick="openShop('topup')">🪙 <span data-t="topupBtn">Top Up Koin</span></button>
+      <button class="pause-btn pb-premium" onclick="openShop('premium')">👑 <span data-t="premiumBtn">Premium</span></button>
+      <button class="pause-btn pb-quit" onclick="confirmQuit()">🚪 <span data-t="quitBtn">Keluar Game</span></button>
+    </div>
+  </div>
 </div>
 
-<p style="text-align:center;color:#ff5ca8;margin-top:15px;">
-READY TO LEVEL UP?
-</p>
-
-<div class="barcode"></div>
-
-<div class="secretText">
-HONEY BERRY CAFÉ
+<!-- SETTINGS MODAL -->
+<div id="settingsOverlay" class="overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+    <h2>⚙️ <span data-t="settingTitle">Pengaturan</span></h2>
+    <div class="setting-row">
+      <div class="setting-label">🔊 <span data-t="bgmVol">Volume Musik</span></div>
+      <input type="range" min="0" max="100" value="50" id="bgmVol" oninput="setBGMVol(this.value)">
+    </div>
+    <div class="setting-row">
+      <div class="setting-label">🔔 <span data-t="sfxVol">Volume SFX</span></div>
+      <input type="range" min="0" max="100" value="80" id="sfxVol" oninput="setSFXVol(this.value)">
+    </div>
+    <div class="setting-row">
+      <div class="setting-label">🌙 <span data-t="darkMode">Mode Gelap</span><small data-t="darkModeSub">Ubah tampilan jadi dark</small></div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="darkToggle" onchange="toggleDark(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+      <div class="setting-label">⚡ <span data-t="difficulty">Tingkat Kesulitan</span></div>
+      <div class="diff-row">
+        <button class="diff-btn active" id="diff-easy" onclick="setDiff('easy')">😊 <span data-t="easy">Mudah</span></button>
+        <button class="diff-btn" id="diff-normal" onclick="setDiff('normal')">😐 <span data-t="normal">Normal</span></button>
+        <button class="diff-btn" id="diff-hard" onclick="setDiff('hard')">😈 <span data-t="hard">Sulit</span></button>
+      </div>
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+      <div class="setting-label">🌐 <span data-t="language">Bahasa</span></div>
+      <div class="lang-row">
+        <button class="lang-btn active" id="lang-id" onclick="setLang('id')">🇮🇩 Indonesia</button>
+        <button class="lang-btn" id="lang-en" onclick="setLang('en')">🇬🇧 English</button>
+      </div>
+    </div>
+    <button class="buy-btn" onclick="closeSettings()" style="margin-top:18px;" data-t="saveClose">💾 Simpan & Tutup</button>
+  </div>
 </div>
 
-<button onclick="nextLevel()">
-NEXT LEVEL
-</button>
-
+<!-- SHOP MODAL -->
+<div id="shopOverlay" class="overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeShop()">✕</button>
+    <h2>🛍️ <span data-t="shopTitle">Toko</span></h2>
+    <div class="shop-tabs">
+      <button class="shop-tab active" id="tab-topup" onclick="switchTab('topup')" data-t="tabTopup">🪙 Top Up Koin</button>
+      <button class="shop-tab" id="tab-coinmenu" onclick="switchTab('coinmenu')">🍽️ Menu Koin</button>
+      <button class="shop-tab" id="tab-premium" onclick="switchTab('premium')" data-t="tabPremium">👑 Premium</button>
+    </div>
+    <div class="shop-panel active" id="panel-topup">
+      <div class="coins-display">🪙 Koin kamu: <span id="coinsInShop">0</span></div>
+      <div class="coin-packs">
+        <div class="coin-pack" onclick="buyCoinPack(50,'Rp5.000')">
+          <div class="coins">+50🪙</div>
+          <div class="pack-label" data-t="basicPack">Starter Pack</div>
+          <div class="pack-price">Rp5.000</div>
+          <button class="buy-btn" style="margin-top:8px;padding:9px;">Beli</button>
+        </div>
+        <div class="coin-pack popular" onclick="buyCoinPack(150,'Rp12.000')">
+          <div class="popular-tag" data-t="mostPop">TERPOPULER</div>
+          <div class="coins">+150🪙</div>
+          <div class="pack-label" data-t="popPack">Value Pack</div>
+          <div class="pack-price">Rp12.000</div>
+          <button class="buy-btn" style="margin-top:8px;padding:9px;">Beli</button>
+        </div>
+        <div class="coin-pack" onclick="buyCoinPack(350,'Rp25.000')">
+          <div class="coins">+350🪙</div>
+          <div class="pack-label" data-t="megaPack">Mega Pack</div>
+          <div class="pack-price">Rp25.000</div>
+          <button class="buy-btn" style="margin-top:8px;padding:9px;">Beli</button>
+        </div>
+        <div class="coin-pack" onclick="buyCoinPack(800,'Rp50.000')">
+          <div class="coins">+800🪙</div>
+          <div class="pack-label" data-t="ultimatePack">Ultimate Pack</div>
+          <div class="pack-price">Rp50.000</div>
+          <button class="buy-btn" style="margin-top:8px;padding:9px;">Beli</button>
+        </div>
+      </div>
+      <hr style="margin:18px 0;border-color:#ffd6ec;">
+      <p style="font-weight:bold;color:#c0195a;margin-bottom:10px;" data-t="coinUseTitle">🪙 Pakai Koinmu:</p>
+      <div style="display:grid;gap:9px;">
+        <button class="buy-btn" onclick="buyExtraLife()" style="background:linear-gradient(to right,#e74c3c,#c0392b);">❤️ +1 Nyawa — <span data-t="lifePrice">50 Koin</span></button>
+        <button class="buy-btn" onclick="buyExtraTime()" style="background:linear-gradient(to right,#2980b9,#3498db);">⏰ +30 Detik — <span data-t="timePrice">30 Koin</span></button>
+        <button class="buy-btn" onclick="buyRevealPrices()" style="background:linear-gradient(to right,#8e44ad,#9b59b6);">🔍 Buka Harga Tersembunyi — <span data-t="revealPrice">80 Koin</span></button>
+        <button class="buy-btn" onclick="buyBudgetBoost()" style="background:linear-gradient(to right,#27ae60,#2ecc71);">💰 +Rp20.000 Budget — <span data-t="budgetPrice">100 Koin</span></button>
+      </div>
+    </div>
+    <div class="shop-panel" id="panel-coinmenu">
+      <div class="coins-display">🪙 Koin kamu: <span id="coinsInCoinMenu">0</span></div>
+      <p style="font-size:13px;color:#888;text-align:center;margin-bottom:14px;">Menu ini bisa kamu tambahkan ke belanjaan gratis! Koin tersimpan antar level. 💾</p>
+      <div id="coinMenuList" style="display:grid;gap:10px;max-height:420px;overflow-y:auto;"></div>
+    </div>
+    <div class="shop-panel" id="panel-premium">
+      <div id="premStatusMsg" style="text-align:center;margin-bottom:14px;font-size:15px;color:#888;"></div>
+      <div class="premium-card" id="premCard1" onclick="buyPremium('weekly','Rp15.000',7)">
+        <h3>👑 Premium Weekly</h3>
+        <ul>
+          <li data-t="premF1">❌ Iklan dihilangkan</li>
+          <li data-t="premF2">🪙 +50 koin bonus per level</li>
+          <li data-t="premF3">💰 Budget +10% tiap level</li>
+          <li data-t="premF4">⏰ +15 detik tiap level</li>
+        </ul>
+        <div class="prem-price">Rp15.000 / minggu</div>
+      </div>
+      <div class="premium-card" id="premCard2" style="border-color:#f39c12;" onclick="buyPremium('monthly','Rp45.000',30)">
+        <h3>🌟 Premium Monthly</h3>
+        <ul>
+          <li data-t="premF1">❌ Iklan dihilangkan</li>
+          <li data-t="premF2">🪙 +100 koin bonus per level</li>
+          <li data-t="premF3">💰 Budget +20% tiap level</li>
+          <li data-t="premF4">⏰ +30 detik tiap level</li>
+          <li data-t="premF5">😈 Unlock semua level langsung</li>
+        </ul>
+        <div class="prem-price" style="color:#f39c12;">Rp45.000 / bulan</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-</div>
-
-<!-- GAME OVER -->
-
-<div id="gameOver">
-
-<h1>💀 GAME OVER</h1>
-
-<p id="gameOverText"></p>
-
-<br>
-
-<button class="retry" onclick="restartGame()">
-ULANG GAME
-</button>
-
+<!-- QUIT CONFIRM -->
+<div id="quitOverlay" class="overlay">
+  <div class="modal-box" style="max-width:340px;text-align:center;">
+    <h2>🚪 <span data-t="quitTitle">Keluar Game?</span></h2>
+    <p style="margin:14px 0;color:#888;" data-t="quitMsg">Progress level ini akan hilang.</p>
+    <div style="display:grid;gap:10px;margin-top:12px;">
+      <button class="pause-btn pb-quit" onclick="doQuit()" data-t="confirmQuit">Ya, Keluar</button>
+      <button class="pause-btn pb-resume" onclick="document.getElementById('quitOverlay').classList.remove('show')" data-t="cancelQuit">Batal, Lanjut Main</button>
+    </div>
+  </div>
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let buyerName="",savedPin="",level=1;
+let subtotal=0,total=0,cart=[];
+let budget=50000,time=30;
+let timerInterval,eventInterval,changingPriceInterval;
+let lives=3,pinAttempts=3;
+let hasTax=false,activeEvent=null,activeCat="Semua";
+let currentLevelItems=[];
+let coins=0,isPremium=false,premiumExpiry=null;
+let isPaused=false,gameOverReason="";
+let difficulty="easy";
+let lang="id";
+let sfxVol=0.8,bgmVolVal=0.5;
+let pricesRevealed=false;
+let coinMenuUnlocked={}; // key: item name, value: true if unlocked
 
-let buyerName="";
-let savedPin="";
-let level=1;
-let total=0;
-let cart=[];
-let budget=50000;
-let time=30;
-let timerInterval;
-let gameOverReason="";
+// ══ COIN MENU CATALOG ══
+const coinMenuCatalog = [
+  // MINUMAN
+  {emoji:"🧋",name:"Signature Milk Tea",desc:"Teh susu rahasia barista",cost:40,category:"☕ Minuman",price:0,rarity:"common"},
+  {emoji:"🍵",name:"Ceremonial Matcha",desc:"Matcha kelas upacara dari Jepang",cost:60,category:"☕ Minuman",price:0,rarity:"common"},
+  {emoji:"☕",name:"Hand Drip Ethiopia",desc:"Single origin kopi Ethiopia",cost:80,category:"☕ Minuman",price:0,rarity:"rare"},
+  {emoji:"🥤",name:"Rainbow Smoothie",desc:"7 buah segar dalam 1 gelas",cost:70,category:"🥤 Smoothie",price:0,rarity:"common"},
+  {emoji:"🍹",name:"Tropical Paradise",desc:"Blend eksklusif buah tropis",cost:90,category:"🥤 Smoothie",price:0,rarity:"rare"},
+  {emoji:"🫧",name:"Sparkling Rose Soda",desc:"Soda artisanal bunga mawar",cost:60,category:"☕ Minuman",price:0,rarity:"common"},
+  {emoji:"🧃",name:"Cold Pressed Juice",desc:"Jus perasan dingin premium",cost:75,category:"🥤 Smoothie",price:0,rarity:"rare"},
+  {emoji:"🌺",name:"Hibiscus Lemonade",desc:"Lemonade bunga hibiscus segar",cost:55,category:"☕ Minuman",price:0,rarity:"common"},
 
+  // DESSERT
+  {emoji:"🍫",name:"Belgian Truffle",desc:"Coklat truffle import Belgia",cost:80,category:"🍰 Dessert",price:0,rarity:"rare"},
+  {emoji:"🎂",name:"Mini Birthday Cake",desc:"Kue ultah mini spesial untuk kamu",cost:100,category:"🍰 Dessert",price:0,rarity:"rare"},
+  {emoji:"🍦",name:"Soft Serve Matcha",desc:"Es krim matcha lembut premium",cost:50,category:"🍰 Dessert",price:0,rarity:"common"},
+  {emoji:"🥧",name:"Strawberry Tart",desc:"Tart stroberi segar dari oven",cost:70,category:"🍰 Dessert",price:0,rarity:"common"},
+  {emoji:"🍰",name:"Cheesecake NY Style",desc:"Cheesecake gaya New York asli",cost:120,category:"🍰 Dessert",price:0,rarity:"epic"},
+  {emoji:"🧁",name:"Gold Sprinkle Cupcake",desc:"Cupcake dengan taburan emas",cost:90,category:"🍰 Dessert",price:0,rarity:"rare"},
 
-const allItems = [
+  // MAKANAN
+  {emoji:"🥗",name:"Truffle Salad",desc:"Salad segar dengan minyak truffle",cost:110,category:"🍔 Makanan",price:0,rarity:"epic"},
+  {emoji:"🍝",name:"Spaghetti Aglio Olio",desc:"Spaghetti klasik Italia sederhana",cost:85,category:"🍔 Makanan",price:0,rarity:"rare"},
+  {emoji:"🥙",name:"Shawarma Royale",desc:"Shawarma isi daging premium",cost:75,category:"🍔 Makanan",price:0,rarity:"common"},
+  {emoji:"🍱",name:"Bento Spesial Chef",desc:"Bento buatan chef eksklusif",cost:95,category:"🍔 Makanan",price:0,rarity:"rare"},
 
-
-
-{emoji:"🍪",name:"Cookies",price:25000},
-{emoji:"🍩",name:"Donat Coklat",price:15000},
-{emoji:"🧁",name:"Cupcake",price:20000},
-{emoji:"🥐",name:"Croissant",price:35000},
-{emoji:"🧇",name:"Waffle Mini",price:30000},
-
-{emoji:"🥤",name:"Iced Tea",price:20000},
-{emoji:"☕",name:"Espresso",price:32000},
-{emoji:"🍫",name:"Chocolate Milk",price:15000},
-{emoji:"🍓",name:"Strawberry Milk",price:18000},
-{emoji:"🧋",name:"Boba Original",price:18000},
-
-{emoji:"🍰",name:"Red Velvet",price:25000},
-{emoji:"🥪",name:"Sandwich",price:20000},
-{emoji:"🍟",name:"French Fries",price:15000},
-{emoji:"🍕",name:"Pizza",price:50000},
-{emoji:"🍔",name:"Burger",price:45000},
-
-{emoji:"🧋",name:"Milk Tea",price:18000},
-{emoji:"🍵",name:"Matcha Latte",price:20000},
-{emoji:"🥛",name:"Americano",price:17000},
-{emoji:"🧃",name:"Butterscotch Sea Salt Latte",price:30000},
-{emoji:"🥤",name:"Caramel Macchiato",price:30000},
-{emoji:"☕",name:"Aren Latte",price:25000},
-
-{emoji:"🍝",name:"Spaghetti Carbonara",price:40000},
-{emoji:"🍗",name:"Fried Chicken",price:35000},
-{emoji:"🌭",name:"Hot Dog",price:25000},
-{emoji:"🥞",name:"Pancake",price:30000},
-{emoji:"🍤",name:"Shrimp Roll",price:45000},
-
-{emoji:"🍹",name:"Mojito Mocktail",price:35000},
-{emoji:"🥭",name:"Mango Smoothie",price:28000},
-{emoji:"🍋",name:"Lemon Tea",price:20000},
-{emoji:"🍪",name:"Cookies & Cream Shake",price:35000},
-{emoji:"🍓",name:"Berry Smoothie",price:40000},
-
-{emoji:"🥩",name:"Steak",price:65000},
-{emoji:"🍣",name:"Sushi Roll",price:55000},
-{emoji:"🧀",name:"Cheese Burger",price:50000},
-{emoji:"🍜",name:"Ramen",price:45000},
-{emoji:"🥗",name:"Caesar Salad",price:35000},
-
-{emoji:"🥥",name:"Coconut Latte",price:35000},
-{emoji:"🍯",name:"Honey Lemon Tea",price:25000},
-{emoji:"🍫",name:"Mocha Latte",price:35000},
-{emoji:"🧋",name:"Brown Sugar Boba",price:30000},
-{emoji:"🍑",name:"Peach Tea",price:25000},
-
-{emoji:"🦞",name:"Lobster Roll",price:80000},
-{emoji:"🍖",name:"BBQ Ribs",price:75000},
-{emoji:"🍛",name:"Chicken Katsu Curry",price:55000},
-{emoji:"🥟",name:"Dumpling",price:40000},
-{emoji:"🌮",name:"Taco",price:45000},
-
-{emoji:"☕",name:"Signature Coffee",price:45000},
-{emoji:"🍹",name:"Blue Lagoon",price:40000},
-{emoji:"🧋",name:"Taro Milk Tea",price:35000},
-{emoji:"🍓",name:"Strawberry Smoothie",price:40000},
-{emoji:"🍫",name:"Premium Chocolate",price:45000}
-
+  // ULTRA MEWAH
+  {emoji:"🦪",name:"Oyster Platter",desc:"Tiram segar dengan saus lemon",cost:200,category:"👑 Premium",price:0,rarity:"legendary"},
+  {emoji:"🥩",name:"Wagyu A5 Slice",desc:"Potongan wagyu grade A5 asli Jepang",cost:250,category:"👑 Premium",price:0,rarity:"legendary"},
+  {emoji:"🦞",name:"Half Lobster Grilled",desc:"Setengah lobster panggang mentega",cost:300,category:"👑 Premium",price:0,rarity:"legendary"},
+  {emoji:"🍣",name:"Omakase Box",desc:"5 piece sushi omakase pilihan chef",cost:350,category:"👑 Premium",price:0,rarity:"legendary"},
+  {emoji:"💎",name:"Diamond Tasting Menu",desc:"7 course meal eksklusif paling mewah",cost:500,category:"👑 Premium",price:0,rarity:"legendary"},
 ];
+const rarityColor={common:"#27ae60",rare:"#2980b9",epic:"#8e44ad",legendary:"#f39c12"};
+const rarityLabel={common:"Biasa",rare:"Langka",epic:"Epik",legendary:"⭐ Legendaris"};
 
-function goName(){
-
-document.getElementById("startScreen").style.display="none";
-
-document.getElementById("nameScreen").style.display="flex";
-
+// ══ TRANSLATIONS ══
+const T={
+  id:{nameTitle:"Nama Pelanggan",namePh:"Masukkan Nama Pembeli",next:"LANJUT",pinTitle:"Buat PIN",pinHint:"PIN 6 digit — hafalkan!",startPlay:"MULAI GAME",pauseBtn:"Pause",cartTitle:"Keranjang",subtotal:"Subtotal",tax:"Pajak 10%",totalLabel:"Total",checkoutBtn:"Checkout",enterPin:"Masukkan PIN Pembayaran",payNow:"Bayar",nameLabel:"Nama",readyNext:"READY TO LEVEL UP? 🚀",nextLevel:"NEXT LEVEL ➡️",retryBtn:"ULANG GAME",playAgain:"Main Lagi",winAllMsg:"Kamu berhasil menyelesaikan semua 5 level!\nMaster belanja sejati! 🎉",pausedTitle:"DIJEDA",resumeBtn:"Lanjut Main",settingBtn:"Pengaturan",topupBtn:"Top Up Koin",premiumBtn:"Premium",quitBtn:"Keluar Game",settingTitle:"Pengaturan",bgmVol:"Volume Musik",sfxVol:"Volume SFX",darkMode:"Mode Gelap",darkModeSub:"Ubah tampilan jadi dark",difficulty:"Tingkat Kesulitan",easy:"Mudah",normal:"Normal",hard:"Sulit",language:"Bahasa",saveClose:"Simpan & Tutup",shopTitle:"Toko",tabTopup:"🪙 Top Up Koin",tabPremium:"👑 Premium",basicPack:"Starter Pack",mostPop:"TERPOPULER",popPack:"Value Pack",megaPack:"Mega Pack",ultimatePack:"Ultimate Pack",coinUseTitle:"🪙 Pakai Koinmu:",lifePrice:"50 Koin",timePrice:"30 Koin",revealPrice:"80 Koin",budgetPrice:"100 Koin",premF1:"❌ Iklan dihilangkan",premF2:"🪙 Koin bonus per level",premF3:"💰 Budget lebih besar",premF4:"⏰ Waktu lebih lama",premF5:"😈 Unlock semua level",quitTitle:"Keluar Game?",quitMsg:"Progress level ini akan hilang.",confirmQuit:"Ya, Keluar",cancelQuit:"Batal, Lanjut Main",outOfTime:"Waktu habis? Beli +30s!",coinsBuyTime:"koin → +30 Detik"},
+  en:{nameTitle:"Customer Name",namePh:"Enter Customer Name",next:"CONTINUE",pinTitle:"Create PIN",pinHint:"6-digit PIN — memorize it!",startPlay:"START GAME",pauseBtn:"Pause",cartTitle:"Cart",subtotal:"Subtotal",tax:"Tax 10%",totalLabel:"Total",checkoutBtn:"Checkout",enterPin:"Enter Payment PIN",payNow:"Pay",nameLabel:"Name",readyNext:"READY TO LEVEL UP? 🚀",nextLevel:"NEXT LEVEL ➡️",retryBtn:"RETRY",playAgain:"Play Again",winAllMsg:"You've completed all 5 levels!\nTrue shopping master! 🎉",pausedTitle:"PAUSED",resumeBtn:"Resume",settingBtn:"Settings",topupBtn:"Top Up Coins",premiumBtn:"Premium",quitBtn:"Quit Game",settingTitle:"Settings",bgmVol:"Music Volume",sfxVol:"SFX Volume",darkMode:"Dark Mode",darkModeSub:"Switch to dark theme",difficulty:"Difficulty",easy:"Easy",normal:"Normal",hard:"Hard",language:"Language",saveClose:"Save & Close",shopTitle:"Shop",tabTopup:"🪙 Top Up Coins",tabPremium:"👑 Premium",basicPack:"Starter Pack",mostPop:"POPULAR",popPack:"Value Pack",megaPack:"Mega Pack",ultimatePack:"Ultimate Pack",coinUseTitle:"🪙 Use Your Coins:",lifePrice:"50 Coins",timePrice:"30 Coins",revealPrice:"80 Coins",budgetPrice:"100 Coins",premF1:"❌ No ads",premF2:"🪙 Bonus coins per level",premF3:"💰 Bigger budget",premF4:"⏰ More time",premF5:"😈 Unlock all levels",quitTitle:"Quit Game?",quitMsg:"Level progress will be lost.",confirmQuit:"Yes, Quit",cancelQuit:"Cancel, Keep Playing",outOfTime:"Out of time? Buy +30s!",coinsBuyTime:"coins → +30 Seconds"}
+};
+function t(key){return (T[lang]||T.id)[key]||key;}
+function applyLang(){
+  document.querySelectorAll("[data-t]").forEach(el=>{const k=el.dataset.t;const v=t(k);if(v)el.textContent=v;});
+  document.querySelectorAll("[data-ph]").forEach(el=>{el.placeholder=t(el.dataset.ph)||el.placeholder;});
 }
 
+function getDiffMod(){
+  if(difficulty==="easy") return {budgetMult:1.15,timeMult:1.3};
+  if(difficulty==="hard") return {budgetMult:0.85,timeMult:0.75};
+  return {budgetMult:1,timeMult:1};
+}
+
+// ══════════════════════════════════════════════════════
+// MENU DATA — 50 ITEM PER LEVEL
+// ══════════════════════════════════════════════════════
+const levelMenus = {
+  1: {
+    "🍰 Dessert": [
+      {emoji:"🍪",name:"Cookies Klasik",price:12000},
+      {emoji:"🍩",name:"Donat Gula",price:10000},
+      {emoji:"🧁",name:"Cupcake Vanilla",price:15000},
+      {emoji:"🍰",name:"Bolu Coklat",price:18000},
+      {emoji:"🥐",name:"Croissant Mentega",price:14000},
+      {emoji:"🍮",name:"Puding Karamel",price:12000},
+      {emoji:"🍬",name:"Candy Bar",price:8000},
+      {emoji:"🍭",name:"Lollipop",price:7000},
+      {emoji:"🧇",name:"Waffle Madu",price:16000},
+      {emoji:"🥞",name:"Pancake Susu",price:15000}
+    ],
+    "☕ Minuman": [
+      {emoji:"🥤",name:"Es Teh Manis",price:8000},
+      {emoji:"☕",name:"Kopi Tubruk",price:10000},
+      {emoji:"🍫",name:"Susu Coklat",price:12000},
+      {emoji:"🍓",name:"Susu Strawberry",price:13000},
+      {emoji:"🧋",name:"Teh Tarik",price:11000},
+      {emoji:"🥛",name:"Susu Murni",price:8000},
+      {emoji:"🍵",name:"Teh Hijau",price:9000},
+      {emoji:"🥤",name:"Es Jeruk",price:8000},
+      {emoji:"🍶",name:"Air Jahe",price:7000},
+      {emoji:"🧃",name:"Jus Jambu",price:10000}
+    ],
+    "🥤 Smoothie": [
+      {emoji:"🍓",name:"Smoothie Strawberry",price:18000},
+      {emoji:"🥭",name:"Jus Mangga Segar",price:15000},
+      {emoji:"🍋",name:"Es Lemon",price:12000},
+      {emoji:"🍌",name:"Jus Pisang",price:13000},
+      {emoji:"🍍",name:"Jus Nanas",price:12000},
+      {emoji:"🍈",name:"Jus Melon",price:13000},
+      {emoji:"🍇",name:"Jus Anggur",price:15000},
+      {emoji:"🥝",name:"Jus Kiwi",price:16000},
+      {emoji:"🍑",name:"Jus Peach",price:16000},
+      {emoji:"🍒",name:"Jus Ceri",price:18000}
+    ],
+    "🍔 Makanan": [
+      {emoji:"🥪",name:"Sandwich Telur",price:15000},
+      {emoji:"🍟",name:"Kentang Goreng",price:12000},
+      {emoji:"🌭",name:"Sosis Bakar",price:13000},
+      {emoji:"🥗",name:"Salad Sayur",price:15000},
+      {emoji:"🍳",name:"Telur Dadar",price:10000},
+      {emoji:"🥚",name:"Telur Rebus",price:7000},
+      {emoji:"🍞",name:"Roti Bakar",price:10000},
+      {emoji:"🧆",name:"Falafel",price:14000},
+      {emoji:"🥙",name:"Wrap Ayam",price:18000},
+      {emoji:"🫔",name:"Tortilla",price:16000},
+      {emoji:"🫕",name:"Sup Ayam",price:15000},
+      {emoji:"🍲",name:"Nasi Goreng Mini",price:18000},
+      {emoji:"🥜",name:"Edamame",price:9000},
+      {emoji:"🧀",name:"Grilled Cheese",price:16000},
+      {emoji:"🫘",name:"Baked Beans Toast",price:14000},
+      {emoji:"🥒",name:"Onigiri",price:12000},
+      {emoji:"🍙",name:"Onigiri Ayam",price:13000},
+      {emoji:"🍱",name:"Bento Mini",price:18000},
+      {emoji:"🌽",name:"Jagung Bakar",price:10000},
+      {emoji:"🥕",name:"Stik Wortel & Dip",price:8000}
+    ]
+  },
+  2: {
+    "🍰 Dessert": [
+      {emoji:"🎂",name:"Birthday Cake",price:35000},
+      {emoji:"🍰",name:"Red Velvet",price:28000},
+      {emoji:"🧁",name:"Cupcake Red Velvet",price:22000},
+      {emoji:"🍮",name:"Crème Brûlée",price:32000},
+      {emoji:"🍫",name:"Chocolate Fondant",price:30000},
+      {emoji:"🥐",name:"Croissant Almond",price:25000},
+      {emoji:"🥧",name:"Pie Apel",price:28000},
+      {emoji:"🧇",name:"Waffle Nutella",price:30000},
+      {emoji:"🍦",name:"Es Krim Vanila",price:18000},
+      {emoji:"🍨",name:"Sundae Coklat",price:25000}
+    ],
+    "☕ Minuman": [
+      {emoji:"☕",name:"Espresso",price:22000},
+      {emoji:"☕",name:"Americano",price:20000},
+      {emoji:"☕",name:"Cappuccino",price:28000},
+      {emoji:"☕",name:"Flat White",price:30000},
+      {emoji:"🧋",name:"Boba Klasik",price:22000},
+      {emoji:"🧋",name:"Brown Sugar Boba",price:28000},
+      {emoji:"🍵",name:"Matcha Latte",price:25000},
+      {emoji:"🥥",name:"Coconut Coffee",price:28000},
+      {emoji:"🍯",name:"Honey Latte",price:27000},
+      {emoji:"🥤",name:"Caramel Latte",price:30000}
+    ],
+    "🥤 Smoothie": [
+      {emoji:"🍹",name:"Mojito Mocktail",price:28000},
+      {emoji:"🍓",name:"Berry Blast",price:30000},
+      {emoji:"🥭",name:"Mango Lassi",price:25000},
+      {emoji:"🍋",name:"Lemonade Segar",price:20000},
+      {emoji:"🍍",name:"Pina Colada Mocktail",price:28000},
+      {emoji:"🍇",name:"Grape Smoothie",price:25000},
+      {emoji:"🥝",name:"Kiwi Mint Smoothie",price:28000},
+      {emoji:"🍑",name:"Peach Smoothie",price:27000},
+      {emoji:"🫐",name:"Blueberry Smoothie",price:30000},
+      {emoji:"🥥",name:"Coconut Smoothie",price:27000},
+      {emoji:"🍈",name:"Honeydew Smoothie",price:25000}
+    ],
+    "🍔 Makanan": [
+      {emoji:"🥪",name:"Club Sandwich",price:30000},
+      {emoji:"🍔",name:"Cheeseburger",price:38000},
+      {emoji:"🌮",name:"Taco Ayam",price:30000},
+      {emoji:"🥗",name:"Caesar Salad",price:28000},
+      {emoji:"🍕",name:"Pizza Mini",price:35000},
+      {emoji:"🌯",name:"Burrito",price:32000},
+      {emoji:"🥟",name:"Dumpling Kukus",price:28000},
+      {emoji:"🍤",name:"Udang Goreng",price:30000},
+      {emoji:"🍗",name:"Ayam Goreng",price:28000},
+      {emoji:"🥩",name:"Beef Steak Mini",price:45000},
+      {emoji:"🍲",name:"Nasi Goreng Spesial",price:28000},
+      {emoji:"🫕",name:"Soto Ayam",price:25000},
+      {emoji:"🥣",name:"Granola Bowl",price:22000},
+      {emoji:"🍱",name:"Bento Ayam Teriyaki",price:35000},
+      {emoji:"🌯",name:"Shawarma Mini",price:32000},
+      {emoji:"🧆",name:"Falafel Wrap",price:28000},
+      {emoji:"🥬",name:"Gado-Gado",price:22000},
+      {emoji:"🍙",name:"Onigiri Salmon",price:25000},
+      {emoji:"🥑",name:"Avocado Toast",price:30000}
+    ]
+  },
+  3: {
+    "🍰 Dessert": [
+      {emoji:"🎂",name:"Layer Cake Coklat",price:45000},
+      {emoji:"🍰",name:"Tiramisu",price:40000},
+      {emoji:"🧁",name:"Cupcake Premium",price:30000},
+      {emoji:"🍮",name:"Panna Cotta",price:38000},
+      {emoji:"🫐",name:"Blueberry Cheesecake",price:45000},
+      {emoji:"🍓",name:"Strawberry Shortcake",price:42000},
+      {emoji:"🥧",name:"Lemon Tart",price:38000},
+      {emoji:"🍫",name:"Dark Chocolate Mousse",price:40000},
+      {emoji:"🍦",name:"Gelato Pistachio",price:35000},
+      {emoji:"🧇",name:"Waffle Belgian",price:38000},
+      {emoji:"🥞",name:"Pancake Blueberry",price:35000},
+      {emoji:"🍬",name:"Macaron Box",price:40000}
+    ],
+    "☕ Minuman": [
+      {emoji:"☕",name:"Aren Latte",price:30000},
+      {emoji:"☕",name:"Signature Blend",price:38000},
+      {emoji:"🧋",name:"Taro Milk Tea",price:32000},
+      {emoji:"🧋",name:"Matcha Boba",price:33000},
+      {emoji:"🍵",name:"Hojicha Latte",price:30000},
+      {emoji:"🥥",name:"Coconut Matcha",price:35000},
+      {emoji:"🍫",name:"Mocha Latte",price:32000},
+      {emoji:"🍯",name:"Honey Chamomile",price:28000},
+      {emoji:"🍑",name:"Peach Tea Latte",price:30000},
+      {emoji:"🧃",name:"Cold Brew Coffee",price:35000},
+      {emoji:"🥤",name:"Rose Latte",price:33000},
+      {emoji:"🍹",name:"Butterfly Pea Latte",price:35000}
+    ],
+    "🥤 Smoothie": [
+      {emoji:"🍓",name:"Strawberry Banana",price:32000},
+      {emoji:"🫐",name:"Açaí Smoothie",price:40000},
+      {emoji:"🥭",name:"Tropical Blend",price:35000},
+      {emoji:"🍏",name:"Green Detox",price:35000},
+      {emoji:"🥥",name:"Coco Berry Smoothie",price:38000},
+      {emoji:"🍋",name:"Yuzu Lemonade",price:32000},
+      {emoji:"🍹",name:"Passion Fruit Mocktail",price:35000},
+      {emoji:"🍇",name:"Purple Rain Smoothie",price:38000},
+      {emoji:"🥝",name:"Kiwi Spinach Boost",price:35000},
+      {emoji:"🍑",name:"Peach Oolong Smoothie",price:37000},
+      {emoji:"🍒",name:"Cherry Almond Milk",price:38000},
+      {emoji:"🌿",name:"Spirulina Smoothie",price:40000},
+      {emoji:"🥝",name:"Green Kiwi Blast",price:35000}
+    ],
+    "🍔 Makanan": [
+      {emoji:"🍝",name:"Spaghetti Bolognese",price:45000},
+      {emoji:"🍛",name:"Curry Ayam",price:42000},
+      {emoji:"🍜",name:"Ramen Miso",price:45000},
+      {emoji:"🥟",name:"Gyoza Pan-Fried",price:38000},
+      {emoji:"🌮",name:"Fish Taco",price:40000},
+      {emoji:"🫕",name:"Tom Yum",price:45000},
+      {emoji:"🥗",name:"Buddha Bowl",price:42000},
+      {emoji:"🍕",name:"Margherita Pizza",price:48000},
+      {emoji:"🍔",name:"Smash Burger",price:50000},
+      {emoji:"🥩",name:"Grilled Salmon",price:55000},
+      {emoji:"🍗",name:"Korean Fried Chicken",price:48000},
+      {emoji:"🫙",name:"Pasta Carbonara",price:45000},
+      {emoji:"🥑",name:"Avocado Egg Toast",price:40000}
+    ]
+  },
+  4: {
+    "🍰 Dessert": [
+      {emoji:"🎂",name:"Opera Cake",price:55000},
+      {emoji:"🍰",name:"Mille-Feuille",price:58000},
+      {emoji:"🧁",name:"Truffle Cupcake",price:40000},
+      {emoji:"🍮",name:"Soufflé Coklat",price:55000},
+      {emoji:"🫐",name:"Wild Berry Cheesecake",price:58000},
+      {emoji:"🍓",name:"Fraisier Cake",price:60000},
+      {emoji:"🥧",name:"Pecan Tart",price:52000},
+      {emoji:"🍫",name:"Valrhona Mousse",price:65000},
+      {emoji:"🍦",name:"Gelato Truffle",price:48000},
+      {emoji:"🧇",name:"Waffle Liège",price:50000},
+    ],
+    "☕ Minuman": [
+      {emoji:"☕",name:"Pour Over Single Origin",price:48000},
+      {emoji:"☕",name:"Siphon Coffee",price:55000},
+      {emoji:"☕",name:"Lungo",price:38000},
+      {emoji:"🧋",name:"Premium Boba",price:42000},
+      {emoji:"🍵",name:"Ceremonial Matcha",price:45000},
+      {emoji:"🥥",name:"Coconut Cold Brew",price:45000},
+      {emoji:"🍫",name:"Aztec Hot Chocolate",price:42000},
+      {emoji:"🍯",name:"Lavender Honey Latte",price:42000},
+      {emoji:"🍑",name:"Yuzu Peach Tea",price:40000},
+      {emoji:"🧃",name:"Nitro Cold Brew",price:50000},
+    ],
+    "🥤 Smoothie": [
+      {emoji:"🍓",name:"Premium Berry Bowl",price:45000},
+      {emoji:"🫐",name:"Açaí Power Bowl",price:55000},
+      {emoji:"🥭",name:"Mango Turmeric Boost",price:45000},
+      {emoji:"🍏",name:"Kale Avocado Blend",price:48000},
+      {emoji:"🥥",name:"Coconut Collagen Drink",price:52000},
+      {emoji:"🍋",name:"Yuzu Honey Smoothie",price:45000},
+      {emoji:"🍹",name:"Dragon Fruit Mocktail",price:48000},
+      {emoji:"🫙",name:"Kombucha Berry",price:50000},
+      {emoji:"🥝",name:"Kiwi Mint Cooler",price:42000},
+      {emoji:"🍒",name:"Black Cherry Smoothie",price:48000},
+    ],
+    "🍔 Makanan": [
+      {emoji:"🍝",name:"Lobster Pasta",price:75000},
+      {emoji:"🍛",name:"Butter Chicken",price:65000},
+      {emoji:"🍜",name:"Tonkotsu Ramen",price:65000},
+      {emoji:"🥟",name:"Xiao Long Bao",price:55000},
+      {emoji:"🫕",name:"Bouillabaisse",price:75000},
+      {emoji:"🥗",name:"Nicoise Salad",price:58000},
+      {emoji:"🍕",name:"Truffle Pizza",price:75000},
+      {emoji:"🍔",name:"Wagyu Burger",price:80000},
+      {emoji:"🥩",name:"Salmon Steak",price:75000},
+      {emoji:"🍗",name:"Duck Confit",price:78000},
+    ],
+    "👑 Premium": [
+      {emoji:"🥩",name:"T-Bone Steak",price:95000},
+      {emoji:"🍣",name:"Omakase Sushi",price:88000},
+      {emoji:"🦞",name:"Lobster Thermidor",price:120000},
+      {emoji:"🍖",name:"Slow-Roast Ribs",price:90000},
+      {emoji:"🧀",name:"Burrata Salad",price:75000},
+      {emoji:"🦑",name:"Squid Ink Pasta",price:85000},
+      {emoji:"🦐",name:"Tiger Prawn Grill",price:92000},
+      {emoji:"🎣",name:"Whole Sea Bass",price:98000},
+      {emoji:"🥚",name:"Truffle Egg Benedict",price:78000},
+      {emoji:"🍄",name:"Foie Gras Toast",price:110000},
+    ]
+  },
+  5: {
+    "🍰 Dessert": [
+      {emoji:"🎂",name:"Wedding Cake Slice",price:70000},
+      {emoji:"🍰",name:"Gateau Basque",price:68000},
+      {emoji:"🧁",name:"Gold Leaf Cupcake",price:55000},
+      {emoji:"🍮",name:"Grand Cru Crème Brûlée",price:72000},
+      {emoji:"🫐",name:"Heirloom Berry Cheesecake",price:75000},
+      {emoji:"🍓",name:"Strawberry Mille-Feuille",price:75000},
+      {emoji:"🥧",name:"Tarte Tatin",price:68000},
+      {emoji:"🍫",name:"Valrhona Grand Cru",price:80000},
+      {emoji:"🍦",name:"Pistachio Gelato Affogato",price:65000},
+      {emoji:"🧇",name:"Gaufre de Bruxelles",price:65000},
+    ],
+    "☕ Minuman": [
+      {emoji:"☕",name:"Black Ivory Coffee",price:85000},
+      {emoji:"☕",name:"Kopi Luwak",price:90000},
+      {emoji:"☕",name:"Geisha Pour Over",price:75000},
+      {emoji:"🧋",name:"Gold Boba",price:65000},
+      {emoji:"🍵",name:"Gyokuro Matcha",price:70000},
+      {emoji:"🥥",name:"Blue Coconut Espresso",price:60000},
+      {emoji:"🍫",name:"Artisan Hot Chocolate",price:58000},
+      {emoji:"🍯",name:"Truffle Honey Latte",price:65000},
+      {emoji:"🍑",name:"Sakura Peach Latte",price:62000},
+      {emoji:"🧃",name:"Triple Nitro Brew",price:72000},
+    ],
+    "🥤 Smoothie": [
+      {emoji:"🍓",name:"Super Berry Elixir",price:60000},
+      {emoji:"🫐",name:"Açaí Supreme Bowl",price:70000},
+      {emoji:"🥭",name:"Alphonso Mango Blend",price:62000},
+      {emoji:"🍏",name:"Ultimate Green Detox",price:65000},
+      {emoji:"🥥",name:"Collagen Coco Shake",price:68000},
+      {emoji:"🍋",name:"Meyer Lemon Yuzu",price:62000},
+      {emoji:"🍹",name:"Butterfly Pea Mocktail",price:65000},
+      {emoji:"🫙",name:"Premium Kombucha",price:65000},
+      {emoji:"🥝",name:"Kiwi Spirulina Blast",price:62000},
+      {emoji:"🍒",name:"Morello Cherry Blend",price:68000},
+    ],
+    "🍔 Makanan": [
+      {emoji:"🍝",name:"Black Truffle Pasta",price:95000},
+      {emoji:"🍛",name:"Saffron Chicken",price:90000},
+      {emoji:"🍜",name:"Uni Ramen",price:98000},
+      {emoji:"🥟",name:"Gold Leaf Dim Sum",price:80000},
+      {emoji:"🫕",name:"Bouillabaisse Royale",price:95000},
+      {emoji:"🥗",name:"Caviar Salad",price:88000},
+      {emoji:"🍕",name:"Black Truffle Pizza",price:98000},
+      {emoji:"🍔",name:"A5 Wagyu Burger",price:120000},
+      {emoji:"🥩",name:"Chilean Sea Bass",price:110000},
+      {emoji:"🍗",name:"Peking Duck",price:105000},
+    ],
+    "👑 Premium": [
+      {emoji:"🥩",name:"Kobe Beef Steak",price:150000},
+      {emoji:"🍣",name:"Otoro Omakase",price:140000},
+      {emoji:"🦞",name:"Boston Lobster",price:160000},
+      {emoji:"🍖",name:"Heritage Pork Ribs",price:120000},
+      {emoji:"🧀",name:"Burrata & Caviar",price:125000},
+      {emoji:"🦑",name:"Cuttlefish Black Pasta",price:115000},
+      {emoji:"🦐",name:"Amaebi Prawn",price:135000},
+      {emoji:"🎣",name:"Whole Turbot",price:145000},
+      {emoji:"🥚",name:"Caviar Egg Benedict",price:110000},
+      {emoji:"🍄",name:"Foie Gras Royale",price:145000},
+    ]
+  }
+};
+
+// Trap items per level (jebakan mahal)
+const trapItemsByLevel = {
+  2: [
+    {emoji:"💎",name:"Diamond Cookie",price:80000,trap:true},
+    {emoji:"👑",name:"Royal Pancake",price:75000,trap:true},
+    {emoji:"🌟",name:"Star Cake VIP",price:90000,trap:true}
+  ],
+  3: [
+    {emoji:"💎",name:"Crystal Cake",price:120000,trap:true},
+    {emoji:"👑",name:"Royal Sundae",price:110000,trap:true},
+    {emoji:"🦄",name:"Unicorn Parfait",price:130000,trap:true}
+  ],
+  4: [
+    {emoji:"💎",name:"Luxury Diamond Dessert",price:180000,trap:true},
+    {emoji:"🔮",name:"Mystery Premium Box",price:200000,trap:true},
+    {emoji:"🌟",name:"Golden Plate Experience",price:220000,trap:true}
+  ],
+  5: [
+    {emoji:"💎",name:"Kobe Diamond Plate",price:300000,trap:true},
+    {emoji:"👑",name:"Royal Imperial Set",price:350000,trap:true},
+    {emoji:"🔮",name:"Ultimate Luxury Box",price:400000,trap:true}
+  ]
+};
+
+function makeMysteryByLevel(lvl){
+  const ranges={3:[20000,60000],4:[30000,80000],5:[50000,150000]};
+  const r=ranges[lvl]||ranges[3];
+  return [
+    {emoji:"🎁",name:"Mystery Dessert Box",mystery:true,basePrice:()=>Math.floor(Math.random()*(r[1]-r[0]))+r[0]},
+    {emoji:"🎲",name:"Lucky Drink Surprise",mystery:true,basePrice:()=>Math.floor(Math.random()*(r[1]-r[0]))+r[0]},
+    {emoji:"🎀",name:"Surprise Tasting Set",mystery:true,basePrice:()=>Math.floor(Math.random()*(r[1]-r[0]))+r[0]},
+    {emoji:"🎪",name:"Chef Secret Special",mystery:true,basePrice:()=>Math.floor(Math.random()*(r[1]-r[0]))+r[0]},
+    {emoji:"🎭",name:"Blind Bag Snack",mystery:true,basePrice:()=>Math.floor(Math.random()*(r[1]-r[0]))+r[0]}
+  ];
+}
+
+function getLevelConfig(lvl){
+  const base={
+    1:{budget:50000,time:30,label:"Normal 😊",tax:false,pinLives:3},
+    2:{budget:85000,time:60,label:"Ada Jebakan! 💣",tax:false,pinLives:3},
+    3:{budget:130000,time:90,label:"Mystery Box! 🎁",tax:false,pinLives:3},
+    4:{budget:200000,time:120,label:"Pajak & Event! ⚡",tax:true,pinLives:3},
+    5:{budget:250000,time:50,label:"😈 MODE SULIT",tax:true,pinLives:1}
+  }[lvl]||{budget:250000,time:50,label:"MAX",tax:true,pinLives:1};
+  const mod=getDiffMod();
+  const premMult=isPremium?(lvl>=3?1.2:1.1):1;
+  const premTime=isPremium?(lvl>=3?30:15):0;
+  return {...base,budget:Math.round(base.budget*mod.budgetMult*premMult),time:Math.round(base.time*mod.timeMult)+premTime};
+}
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ══ SCREENS ══
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  if(id){const el=document.getElementById(id);if(el)el.classList.add("active");}
+}
+function goName(){showScreen("nameScreen");}
 function goPin(){
-
-buyerName=
-document.getElementById("buyerName").value.trim();
-
-if(buyerName===""){
-
-alert("Masukkan nama pembeli");
-return;
-
-}
-
-document.getElementById("nameScreen").style.display="none";
-
-document.getElementById("pinScreen").style.display="flex";
-
+  buyerName=document.getElementById("buyerName").value.trim();
+  if(!buyerName){alert(lang==="en"?"Enter your name!":"Masukkan nama pembeli!");return;}
+  showScreen("pinScreen");
 }
 function startGame(){
-
-savedPin=
-document.getElementById("userPin").value;
-
-if(!/^\d{6}$/.test(savedPin)){
-
-alert("PIN harus 6 angka");
-return;
-
+  savedPin=document.getElementById("userPin").value;
+  if(!/^\d{6}$/.test(savedPin)){alert(lang==="en"?"PIN must be 6 digits!":"PIN harus 6 angka!");return;}
+  showScreen(null);
+  document.getElementById("gameScreen").style.display="flex";
+  document.getElementById("gameScreen").style.flexDirection="column";
+  lives=3;updateLivesDisplay();loadLevel();startTimer();playBGM();
 }
 
-document.getElementById("pinScreen").style.display="none";
-
-document.getElementById("gameScreen").style.display="block";
-
-loadLevel();
-startTimer();
-
+function updateLivesDisplay(){document.getElementById("livesDisplay").innerHTML="❤️".repeat(lives)+"🖤".repeat(Math.max(0,3-lives));}
+function loseLife(reason){
+  lives--;updateLivesDisplay();
+  if(lives<=0){gameOverReason="💔 Nyawa habis! "+reason;showGameOver();return false;}
+  showToast("❤️ -1 Nyawa! "+reason);return true;
 }
 
 function loadLevel(){
+  const cfg=getLevelConfig(level);
+  budget=cfg.budget;time=cfg.time;hasTax=cfg.tax;pinAttempts=cfg.pinLives;
+  cart=[];subtotal=0;total=0;activeEvent=null;pricesRevealed=false;
+  clearInterval(eventInterval);clearInterval(changingPriceInterval);
 
-let itemCount;
+  // Build pool from this level's menu
+  const menuData=levelMenus[level]||levelMenus[5];
+  let pool=[];
+  Object.entries(menuData).forEach(([cat,items])=>{
+    items.forEach(item=>pool.push({...item,category:cat}));
+  });
+  // Add traps from level 2+
+  if(level>=2&&trapItemsByLevel[level]){
+    trapItemsByLevel[level].forEach(t=>pool.push({...t,category:"💣 Jebakan"}));
+  }
+  // Add mystery from level 3+
+  if(level>=3){
+    makeMysteryByLevel(level).forEach(m=>pool.push({...m,category:"🎁 Mystery"}));
+  }
 
-if(level===1){
+  currentLevelItems=shuffle(pool).map(item=>
+    item.mystery?{...item,price:item.basePrice(),displayPrice:"❓"}:{...item,displayPrice:null}
+  );
 
-itemCount=10;
-budget=50000;
-time=30;
+  if(isPremium){
+    const bonus=level>=3?100:50;
+    addCoins(bonus,`👑 Premium bonus +${bonus}🪙`);
+  }
 
-}else if(level===2){
-
-itemCount=20;
-budget=85000;
-time=60;
-
-}else if(level===3){
-
-itemCount=30;
-budget=120000;
-time=90;
-
-}else if(level===4){
-
-itemCount=40;
-budget=170000;
-time=120;
-
-}else{
-
-itemCount=50;
-budget=230000;
-time=150;
-
+  document.getElementById("levelText").innerHTML=`🟢 LEVEL ${level} — ${cfg.label}`;
+  document.getElementById("budgetText").innerHTML=`💰 Rp${budget.toLocaleString("id-ID")}`;
+  const taxDisp=document.getElementById("taxDisplay");
+  if(taxDisp) taxDisp.style.display=hasTax?"inline":"none";
+  document.getElementById("cartItems").innerHTML="";
+  updateCartDisplay();updateCartMeta();
+  buildCategoryBar();renderMarket("Semua");
+  if(level>=4) startRandomEvents();
+  if(level>=5) startChangingPrices();
 }
 
-document.getElementById("levelText").innerHTML=
-`🟢 LEVEL ${level}`;
-
-document.getElementById("budgetText").innerHTML=
-`💰 Budget: Rp${budget.toLocaleString("id-ID")}`;
-
-document.getElementById("itemText").innerHTML=
-`🛍️ ${itemCount} Barang`;
-
-let market=document.getElementById("market");
-
-market.innerHTML="";
-
-for (let i = 0; i < allItems.length; i++) {
-    let item = allItems[i];
-    market.innerHTML += `
-        <div class="item">
-            <div class="emoji">${item.emoji}</div>
-            <h2>${item.name}</h2>
-            <p>Rp${item.price.toLocaleString("id-ID")}</p>
-            <button onclick="addItem('${item.name}',${item.price})">
-                Ambil
-            </button>
-        </div>`;
+function buildCategoryBar(){
+  const bar=document.getElementById("categoryBar");bar.innerHTML="";
+  const menuData=levelMenus[level]||levelMenus[5];
+  const cats=["Semua",...Object.keys(menuData)];
+  if(level>=2) cats.push("💣 Jebakan");
+  if(level>=3) cats.push("🎁 Mystery");
+  cats.forEach(cat=>{
+    const btn=document.createElement("button");
+    btn.className="cat-btn"+(cat==="Semua"?" active":"");
+    btn.textContent=cat;
+    btn.onclick=()=>{activeCat=cat;document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderMarket(cat);};
+    bar.appendChild(btn);
+  });
+  activeCat="Semua";
 }
 
+function getEffectivePrice(item){
+  let p=item.price;
+  if(activeEvent){
+    if(activeEvent.type==="sale") p=Math.round(p*activeEvent.multiplier);
+    else if(activeEvent.type==="drink_up"&&(item.category||"").includes("Minuman")) p=Math.round(p*activeEvent.multiplier);
+    else if(activeEvent.type==="dessert_down"&&(item.category||"").includes("Dessert")) p=Math.round(p*activeEvent.multiplier);
+  }
+  return p;
 }
 
+function renderMarket(cat){
+  const market=document.getElementById("market");market.innerHTML="";
+  let items=cat==="Semua"?currentLevelItems:currentLevelItems.filter(i=>i.category===cat);
+  items.forEach(item=>{
+    const effPrice=getEffectivePrice(item);
+    const hide=(item.mystery&&!pricesRevealed)||(level===5&&!item.mystery&&!pricesRevealed);
+    let priceLabel=hide?`<span style='font-size:26px;'>❓</span>`:`Rp${effPrice.toLocaleString("id-ID")}`;
+    if(!hide&&activeEvent&&activeEvent.type==="sale") priceLabel=`<del style='font-size:13px;color:#ffa0c8;'>Rp${item.price.toLocaleString("id-ID")}</del><br><b>Rp${effPrice.toLocaleString("id-ID")}</b>`;
+    const cls=item.trap?"item trap":item.mystery?"item mystery":"item";
+    const badge=item.trap?`<div style="background:#e74c3c;color:#fff;font-size:11px;border-radius:8px;padding:2px 7px;margin-bottom:5px;display:inline-block;">⚠️ MAHAL</div><br>`:item.mystery?`<div style="background:#8e44ad;color:#fff;font-size:11px;border-radius:8px;padding:2px 7px;margin-bottom:5px;display:inline-block;">🎁 MYSTERY</div><br>`:"";
+    const safeName=item.name.replace(/'/g,"\\'");
+    market.innerHTML+=`<div class="${cls}">${badge}<div class="emoji">${item.emoji}</div><h2>${item.name}</h2><div class="price-tag">${priceLabel}</div><button onclick="addItem('${safeName}',${item.price},${!!item.mystery},${!!item.trap})">Ambil</button></div>`;
+  });
+}
+
+function addItem(name,basePrice,isMystery,isTrap,isCoinItem){
+  const item=isCoinItem
+    ? coinMenuCatalog.find(i=>i.name===name)
+    : currentLevelItems.find(i=>i.name===name);
+  if(!item)return;
+  const effPrice=isCoinItem?0:getEffectivePrice(item);
+  cart.push({name,price:effPrice,isMystery,isTrap,isCoinItem:!!isCoinItem,emoji:item.emoji||""});
+  subtotal+=effPrice;updateCartDisplay();updateCartMeta();
+  const div=document.createElement("div");div.classList.add("cartItem");
+  const idx=cart.length-1;
+  // Harga disembunyikan — hanya nama & emoji
+  const tag=isCoinItem?`<span style="background:#f1c40f;color:#333;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:bold;">🪙 GRATIS</span>`:isMystery?`<span style="font-size:11px;background:#8e44ad;color:#fff;border-radius:6px;padding:1px 6px;">🎁</span>`:"";
+  div.innerHTML=`<span>${item.emoji||""} ${name} ${tag}</span><button class="remove-btn" onclick="removeItem(${idx})">✕</button>`;
+  document.getElementById("cartItems").appendChild(div);
+}
+
+function removeItem(idx){
+  if(idx<0||idx>=cart.length)return;
+  subtotal-=cart[idx].price;if(subtotal<0)subtotal=0;
+  cart.splice(idx,1);
+  const container=document.getElementById("cartItems");container.innerHTML="";
+  cart.forEach((c,i)=>{
+    const div=document.createElement("div");div.classList.add("cartItem");
+    const tag=c.isCoinItem?`<span style="background:#f1c40f;color:#333;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:bold;">🪙 GRATIS</span>`:c.isMystery?`<span style="font-size:11px;background:#8e44ad;color:#fff;border-radius:6px;padding:1px 6px;">🎁</span>`:"";
+    div.innerHTML=`<span>${c.emoji||""} ${c.name} ${tag}</span><button class="remove-btn" onclick="removeItem(${i})">✕</button>`;
+    container.appendChild(div);
+  });
+  updateCartDisplay();updateCartMeta();
+}
+
+function updateCartDisplay(){
+  const taxAmt=hasTax?Math.round(subtotal*0.1):0;
+  total=subtotal+taxAmt;
+  // Hanya update count — harga disembunyikan sampai checkout
+  const countEl=document.getElementById("cartCount");
+  if(countEl) countEl.textContent=cart.length+" item";
+}
+
+function updateCartMeta(){
+  // Hanya tampilkan budget dan jumlah item, BUKAN total/sisa
+  document.getElementById("cartMeta").innerHTML=`💰 Budget: Rp${budget.toLocaleString("id-ID")} &nbsp;|&nbsp; 🛒 ${cart.length} item dipilih`;
+}
 
 function startTimer(){
-
-clearInterval(timerInterval);
-
-document.getElementById("timerText").innerHTML=
-`⏰ ${time} Detik`;
-
-timerInterval=setInterval(()=>{
-
-time--;
-
-document.getElementById("timerText").innerHTML=
-`⏰ ${time} Detik`;
-
-if(time<=0){
-
-clearInterval(timerInterval);
-
-gameOverReason =
-"⏰ Waktu habis! Kamu terlalu lama berbelanja.";
-
-showGameOver();
-
+  clearInterval(timerInterval);
+  document.getElementById("timerText").innerHTML=`⏰ ${time}s`;
+  timerInterval=setInterval(()=>{
+    if(isPaused)return;
+    time--;
+    const el=document.getElementById("timerText");
+    el.innerHTML=`⏰ ${time}s`;
+    el.style.color=time<=10?"#ff0":"#fff";
+    if(time<=0){
+      clearInterval(timerInterval);
+      document.getElementById("coinBuyTime").style.display="block";
+      const survived=loseLife(lang==="en"?"Time's up!":"Waktu habis! Kamu terlalu lama belanja.");
+      if(!survived)return;
+      const cfg=getLevelConfig(level);time=cfg.time;
+      cart=[];subtotal=0;total=0;
+      document.getElementById("cartItems").innerHTML="";
+      updateCartDisplay();updateCartMeta();startTimer();
+    }
+  },1000);
 }
 
-},1000);
-
+const events=[
+  {type:"sale",label:"⚡ FLASH SALE -20%! Semua harga turun!",multiplier:0.8},
+  {type:"tax_extra",label:"🧾 Pajak naik! Hati-hati budget!",multiplier:1.15},
+  {type:"drink_up",label:"🥤 Harga Minuman Naik +30%!",multiplier:1.3},
+  {type:"dessert_down",label:"🍰 Dessert Diskon -25%!",multiplier:0.75},
+  {type:"none",label:"🌸 Tenang... tidak ada event sekarang.",multiplier:1}
+];
+function startRandomEvents(){
+  clearInterval(eventInterval);
+  eventInterval=setInterval(()=>{
+    if(isPaused)return;
+    const ev=events[Math.floor(Math.random()*events.length)];
+    activeEvent=ev.type==="none"?null:ev;
+    const banner=document.getElementById("eventBanner");
+    banner.style.display="block";banner.innerHTML=ev.label;
+    renderMarket(activeCat);
+  },10000);
 }
-
-function addItem(name, price){
-
-cart.push({
-name:name,
-price:price
-});
-
-total += price;
-
-let div=document.createElement("div");
-
-div.classList.add("cartItem");
-
-div.innerHTML=`✅ ${name} - Rp${price.toLocaleString("id-ID")}`;
-
-document.getElementById("cartItems").appendChild(div);
-
+function startChangingPrices(){
+  clearInterval(changingPriceInterval);
+  changingPriceInterval=setInterval(()=>{
+    if(isPaused)return;
+    currentLevelItems.forEach(item=>{if(Math.random()<0.3){const d=(Math.random()-.5)*15000;item.price=Math.max(5000,Math.round(item.price+d));}});
+    renderMarket(activeCat);
+    showToast("📈 Harga berubah! Cek ulang!");
+  },5000);
 }
 
 function goPayment(){
-
-if(cart.length===0){
-
-alert("Keranjang masih kosong!");
-return;
-
+  if(cart.length===0){alert(lang==="en"?"Cart is empty!":"Keranjang masih kosong!");return;}
+  // Hitung total sekarang (baru diketahui)
+  const taxAmt=hasTax?Math.round(subtotal*0.1):0;
+  total=subtotal+taxAmt;
+  if(total>budget){
+    const survived=loseLife(lang==="en"?`Over budget!`:`Over budget! Total Rp${total.toLocaleString("id-ID")} melebihi budget Rp${budget.toLocaleString("id-ID")}. Lebih cermat ya!`);
+    if(!survived)return;
+    cart=[];subtotal=0;total=0;document.getElementById("cartItems").innerHTML="";
+    updateCartDisplay();updateCartMeta();return;
+  }
+  clearInterval(timerInterval);clearInterval(eventInterval);clearInterval(changingPriceInterval);
+  document.getElementById("gameScreen").style.display="none";
+  let html="";
+  cart.forEach(c=>{
+    const priceLabel=c.isCoinItem
+      ?`<span style="background:#f1c40f;color:#333;border-radius:5px;padding:1px 6px;font-size:11px;font-weight:bold;">🪙 GRATIS</span>`
+      :(c.isMystery&&!pricesRevealed)?`<span style='color:#8e44ad;font-weight:bold;'>🎁 Terungkap: Rp${c.price.toLocaleString("id-ID")}</span>`
+      :`Rp${c.price.toLocaleString("id-ID")}`;
+    html+=`<div class="summary-row"><span>${c.emoji||""} ${c.name}${c.isMystery?" 🎁":""}</span><span>${priceLabel}</span></div>`;
+  });
+  if(hasTax) html+=`<div class="summary-row"><span>🧾 Pajak 10%</span><span>Rp${taxAmt.toLocaleString("id-ID")}</span></div>`;
+  document.getElementById("summaryBox").innerHTML=html;
+  document.getElementById("showTotal").innerHTML=`<span style="color:#ff2f84;font-size:26px;font-weight:900;">Rp${total.toLocaleString("id-ID")}</span>`;
+  document.getElementById("pinAttemptsLeft").innerHTML=level===5?`⚠️ PIN hanya 1x!`:`${t("enterPin")} (${pinAttempts}x)`;
+  document.getElementById("pin").value="";
+  document.getElementById("coinBuyTime").style.display="none";
+  showScreen("paymentScreen");
 }
 
-/* BARU CEK BUDGET SAAT CHECKOUT */
-
-if(total > budget){
-
-gameOverReason =
-`💸 Budget Level ${level} cuma Rp${budget.toLocaleString("id-ID")}!
-
-Total belanja kamu Rp${total.toLocaleString("id-ID")}.
-
-Kamu harus mengulang dari Level 1 😭`;
-
-showGameOver();
-return;
-
-}
-
-/* LOLOS KE PEMBAYARAN */
-
-clearInterval(timerInterval);
-
-document.getElementById("gameScreen").style.display="none";
-
-document.getElementById("paymentScreen").style.display="flex";
-
-document.getElementById("showTotal").innerHTML=
-`Rp ${total.toLocaleString("id-ID")}`;
-
-}
 function payNow(){
+  const pin=document.getElementById("pin").value;
+  if(pin!==savedPin){
+    pinAttempts--;
+    if(pinAttempts<=0){
+      const survived=loseLife(lang==="en"?"Wrong PIN! Attempts exhausted!":"PIN salah! Kesempatan habis.");
+      if(!survived)return;
+      resetToGame();return;
+    }
+    document.getElementById("pinAttemptsLeft").innerHTML=`❌ ${lang==="en"?"Wrong PIN":"PIN salah"}! Sisa: ${pinAttempts}x`;
+    document.getElementById("pin").value="";return;
+  }
+  showScreen("receiptScreen");
+  let html="";
+  cart.forEach(c=>{
+    const priceLabel = c.isCoinItem
+      ? `<span style="background:#f1c40f;color:#333;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:bold;">🪙 GRATIS</span>`
+      : `Rp${c.price.toLocaleString("id-ID")}`;
+    html+=`<div class="receiptRow"><span>${c.emoji||""} ${c.name}${c.isMystery?" 🎁":""}</span><span>${priceLabel}</span></div>`;
+  });
+  document.getElementById("receiptItems").innerHTML=html;
+  document.getElementById("receiptName").innerHTML=buyerName;
+  document.getElementById("receiptLevel").innerHTML=level;
+  const taxAmt=hasTax?Math.round(subtotal*0.1):0;
+  document.getElementById("receiptTaxRow").style.display=hasTax?"flex":"none";
+  document.getElementById("receiptTax").innerHTML=taxAmt.toLocaleString("id-ID");
+  document.getElementById("receiptTotal").innerHTML=total.toLocaleString("id-ID");
+  const selisih=budget-total;
+  let stars,starLabel;
+  if(selisih===0){stars="⭐⭐⭐";starLabel=lang==="en"?"PERFECT! Spot on! 🎯":"SEMPURNA! Pas banget! 🎯";}
+  else if(selisih<=15000){stars="⭐⭐";starLabel=lang==="en"?"Great! Almost perfect!":"Bagus! Hampir sempurna! 👏";}
+  else if(selisih<=40000){stars="⭐";starLabel=lang==="en"?"Passed! Be more careful.":"Berhasil! Bisa lebih irit lagi 💪";}
+  else{stars="🌟";starLabel=lang==="en"?"Passed but lots of change!":"Lolos, tapi banyak sisa!";}
+  document.getElementById("starBox").innerHTML=stars;
+  document.getElementById("starLabel").innerHTML=`${starLabel}<br><small style="color:#aaa;">Sisa: Rp${selisih.toLocaleString("id-ID")}</small>`;
+  // Hitung reward koin berdasarkan efisiensi belanja
+  const reward=Math.max(10,Math.round(35-selisih/2500));
+  addCoins(reward,`🎉 Level ${level} clear! +${reward}🪙`);
 
-let pin=document.getElementById("pin").value;
+  // Tampilkan info koin di struk
+  const nextUnlock=coinMenuCatalog.filter(i=>!coinMenuUnlocked[i.name]).sort((a,b)=>a.cost-b.cost)[0];
+  const ownedCount=Object.keys(coinMenuUnlocked).length;
+  const coinInfoEl=document.getElementById("receiptCoinInfo");
+  if(coinInfoEl){
+    let coinMsg=`🪙 Total koinmu: <b>${coins}</b>`;
+    if(ownedCount>0) coinMsg+=` &nbsp;|&nbsp; 🏆 ${ownedCount} menu dibuka`;
+    if(nextUnlock){
+      const kurang=nextUnlock.cost-coins;
+      if(kurang<=0) coinMsg+=`<br>✅ Kamu bisa beli <b>"${nextUnlock.name}"</b> sekarang!`;
+      else coinMsg+=`<br>💡 Nabung <b>${kurang}🪙</b> lagi → buka <b>"${nextUnlock.name}"</b>`;
+    }
+    coinInfoEl.innerHTML=coinMsg;
+  }
 
-if(pin!==savedPin){
-
-gameOverReason =
-"🔒 PIN yang dimasukkan salah! Kamu harus mengulang dari Level 1 😭";
-
-showGameOver();
-return;
-
+  // Tampilkan hint menu koin jika ada yang hampir terbeli
+  showCoinMenuHint();
+  playWinLevel();
 }
 
-document.getElementById("paymentScreen").style.display="none";
-document.getElementById("receiptScreen").style.display="flex";
+// Kasih hint menu koin apa yang bisa dibeli berikutnya
+function showCoinMenuHint(){
+  const affordable = coinMenuCatalog.filter(i=>!coinMenuUnlocked[i.name]&&coins>=i.cost);
+  const almostAffordable = coinMenuCatalog.filter(i=>!coinMenuUnlocked[i.name]&&coins<i.cost).sort((a,b)=>a.cost-b.cost);
+  if(affordable.length>0){
+    const next=affordable[0];
+    setTimeout(()=>showToast(`🛍️ Kamu bisa beli "${next.name}" sekarang! (${next.cost}🪙)`),2000);
+  } else if(almostAffordable.length>0){
+    const next=almostAffordable[0];
+    const kurang=next.cost-coins;
+    setTimeout(()=>showToast(`💡 Butuh ${kurang}🪙 lagi untuk "${next.name}"!`),2000);
+  }
+}
 
-let html="";
-
-cart.forEach(item=>{
-
-html+=`
-<div class="receiptRow">
-<span>${item.name}</span>
-<span>Rp${item.price.toLocaleString("id-ID")}</span>
-</div>
-`;
-
-});
-
-document.getElementById("receiptItems").innerHTML=html;
-document.getElementById("receiptName").innerHTML=buyerName;
-document.getElementById("receiptTotal").innerHTML=
-total.toLocaleString("id-ID");
-
+function resetToGame(){
+  document.getElementById("paymentScreen").classList.remove("active");
+  document.getElementById("gameScreen").style.display="flex";
+  document.getElementById("gameScreen").style.flexDirection="column";
+  const cfg=getLevelConfig(level);time=cfg.time;pinAttempts=cfg.pinLives;
+  cart=[];subtotal=0;total=0;document.getElementById("cartItems").innerHTML="";
+  updateCartDisplay();updateCartMeta();renderMarket(activeCat);startTimer();
 }
 
 function nextLevel(){
-level++;
-
-if(level>5){
-
-alert("🎉 SELAMAT! Kamu berhasil menyelesaikan semua level!");
-location.reload();
-return;
-
-}
-
-total=0;
-cart=[];
-
-document.getElementById("cartItems").innerHTML="";
-
-document.getElementById("receiptScreen").style.display="none";
-
-document.getElementById("gameScreen").style.display="block";
-
-if(level===1){
-
-time=30;
-
-}else if(level===2){
-
-time=60;
-
-}else if(level===3){
-
-time=90;
-
-}else if(level===4){
-
-time=120;
-
-}else{
-
-time=150;
-
-}
-
-loadLevel();
-startTimer();
-
+  if(level>=5){showScreen("winAllScreen");playWinAll();return;}
+  level++;
+  const cfg=getLevelConfig(level);time=cfg.time;pinAttempts=cfg.pinLives;
+  showScreen(null);
+  document.getElementById("gameScreen").style.display="flex";
+  document.getElementById("gameScreen").style.flexDirection="column";
+  loadLevel();startTimer();playBGM();
 }
 
 function showGameOver(){
-
-clearInterval(timerInterval);
-
-document.getElementById("gameScreen").style.display="none";
-document.getElementById("paymentScreen").style.display="none";
-document.getElementById("receiptScreen").style.display="none";
-
-document.getElementById("gameOverText").innerHTML=
-gameOverReason;
-
-document.getElementById("gameOver").style.display="flex";
-
-}
-
-function restartGame(){
-
-level = 1;
-budget = 50000;
-total = 0;
-cart = [];
-
-document.getElementById("cartItems").innerHTML = "";
-
-document.getElementById("gameOver").style.display = "none";
-
-document.getElementById("gameScreen").style.display = "block";
-
-/* MUSIK: stop game over, mulai bgm lagi */
-stopGameOverMusic();
-playBGM();
-
-loadLevel();
-startTimer();
-
-}
-
-/* ============================================
-   MUSIC SYSTEM
-   - Ganti nama file di bagian "GANTI DI SINI"
-   - Format didukung: .mp3 / .ogg / .wav
-   ============================================ */
-
-/* ---- GANTI DI SINI ---- */
-const BGM_FILE        = "BGM.mp3";         // musik sepanjang permainan (loop)
-const GAMEOVER_FILE   = "GAMEOVER.mp3";    // musik saat game over
-const WIN_LEVEL_FILE  = "WINLEVEL.mp3";   // sound saat berhasil clear 1 level
-const WIN_ALL_FILE    = "FINISH.mp3";     // sound saat berhasil semua level
-/* ----------------------- */
-
-const bgmAudio      = new Audio(BGM_FILE);
-bgmAudio.loop       = true;
-bgmAudio.volume     = 0.5;
-
-const gameOverAudio = new Audio(GAMEOVER_FILE);
-gameOverAudio.loop  = false;
-gameOverAudio.volume = 0.7;
-
-const winLevelAudio = new Audio(WIN_LEVEL_FILE);
-winLevelAudio.loop  = false;
-winLevelAudio.volume = 0.8;
-
-const winAllAudio   = new Audio(WIN_ALL_FILE);
-winAllAudio.loop    = false;
-winAllAudio.volume  = 0.8;
-
-function playBGM(){
-  [gameOverAudio, winLevelAudio, winAllAudio].forEach(a => { a.pause(); a.currentTime = 0; });
-  bgmAudio.currentTime = 0;
-  bgmAudio.play().catch(()=>{});
-}
-
-function stopBGM(){
-  bgmAudio.pause();
-  bgmAudio.currentTime = 0;
-}
-
-function playGameOverMusic(){
-  bgmAudio.pause();
-  bgmAudio.currentTime = 0;
-  gameOverAudio.currentTime = 0;
-  gameOverAudio.play().catch(()=>{});
-}
-
-function stopGameOverMusic(){
-  gameOverAudio.pause();
-  gameOverAudio.currentTime = 0;
-}
-
-function playWinLevel(){
-  bgmAudio.pause();
-  winLevelAudio.currentTime = 0;
-  winLevelAudio.play().catch(()=>{});
-  // BGM lanjut lagi setelah sound selesai
-  winLevelAudio.onended = () => { bgmAudio.play().catch(()=>{}); };
-}
-
-function playWinAll(){
-  bgmAudio.pause();
-  bgmAudio.currentTime = 0;
-  winAllAudio.currentTime = 0;
-  winAllAudio.play().catch(()=>{});
-}
-
-/* Hook: musik mulai saat game dimulai */
-const _origStartGame = startGame;
-window.startGame = function(){
-  _origStartGame();
-  playBGM();
-};
-
-/* Hook: ganti musik saat game over */
-const _origShowGameOver = showGameOver;
-window.showGameOver = function(){
-  _origShowGameOver();
+  clearInterval(timerInterval);clearInterval(eventInterval);clearInterval(changingPriceInterval);
+  document.getElementById("gameScreen").style.display="none";
+  showScreen("gameOver");
+  document.getElementById("livesRemaining").innerHTML="🖤".repeat(3);
+  document.getElementById("gameOverText").innerHTML=gameOverReason;
   playGameOverMusic();
-};
+}
+function restartGame(){
+  level=1;lives=3;pinAttempts=3;subtotal=0;total=0;cart=[];activeEvent=null;pricesRevealed=false;
+  coins=0;coinMenuUnlocked={};
+  document.getElementById("cartItems").innerHTML="";
+  document.getElementById("gameOver").classList.remove("active");
+  document.getElementById("gameScreen").style.display="flex";
+  document.getElementById("gameScreen").style.flexDirection="column";
+  updateLivesDisplay();loadLevel();startTimer();stopGameOverMusic();playBGM();
+}
 
-/* Hook: sound menang per level (dipanggil saat payNow berhasil → receipt muncul) */
-const _origPayNow = payNow;
-window.payNow = function(){
-  const pinVal = document.getElementById("pin").value;
-  if(pinVal !== savedPin){ _origPayNow(); return; } // salah PIN → game over, skip
-  _origPayNow();
-  playWinLevel();
-};
+function openPause(){
+  if(!document.getElementById("gameScreen").style.display||document.getElementById("gameScreen").style.display==="none")return;
+  isPaused=true;
+  document.getElementById("pauseInfo").innerHTML=`Level ${level} | ⏰ ${time}s | ❤️ ${lives} | 🪙 ${coins}`;
+  document.getElementById("pauseOverlay").classList.add("show");
+}
+function closePause(){document.getElementById("pauseOverlay").classList.remove("show");}
+function resumeGame(){closePause();isPaused=false;}
 
-/* Hook: sound menang semua level */
-const _origNextLevel = nextLevel;
-window.nextLevel = function(){
-  if(level >= 5){
-    stopBGM();
-    playWinAll();
+function openSettings(){closePause();document.getElementById("settingsOverlay").classList.add("show");}
+function closeSettings(){document.getElementById("settingsOverlay").classList.remove("show");if(document.getElementById("gameScreen").style.display!=="none")isPaused=false;}
+function setBGMVol(v){bgmVolVal=v/100;bgmAudio.volume=bgmVolVal;}
+function setSFXVol(v){sfxVol=v/100;[winLevelAudio,winAllAudio,gameOverAudio].forEach(a=>a.volume=sfxVol);}
+function toggleDark(on){document.body.classList.toggle("dark",on);}
+function setDiff(d){difficulty=d;["easy","normal","hard"].forEach(k=>{document.getElementById("diff-"+k).classList.toggle("active",k===d);});}
+function setLang(l){lang=l;["id","en"].forEach(k=>{document.getElementById("lang-"+k).classList.toggle("active",k===l);});applyLang();}
+
+function confirmQuit(){closePause();document.getElementById("quitOverlay").classList.add("show");}
+function doQuit(){
+  document.getElementById("quitOverlay").classList.remove("show");
+  clearInterval(timerInterval);clearInterval(eventInterval);clearInterval(changingPriceInterval);
+  isPaused=false;
+  document.getElementById("gameScreen").style.display="none";
+  showScreen("startScreen");stopBGM();
+}
+
+function openShop(tab){closePause();document.getElementById("shopOverlay").classList.add("show");switchTab(tab||"topup");updateShopUI();}
+function closeShop(){document.getElementById("shopOverlay").classList.remove("show");}
+function switchTab(tab){
+  ["topup","coinmenu","premium"].forEach(t=>{
+    const btn=document.getElementById("tab-"+t);
+    const panel=document.getElementById("panel-"+t);
+    if(btn) btn.classList.toggle("active",t===tab);
+    if(panel) panel.classList.toggle("active",t===tab);
+  });
+  if(tab==="coinmenu") renderCoinMenu();
+}
+function updateShopUI(){
+  document.getElementById("coinsInShop").innerHTML=coins;
+  document.getElementById("coinsCount").innerHTML=coins;
+  const cinShop=document.getElementById("coinsInCoinMenu");
+  if(cinShop) cinShop.innerHTML=coins;
+  const msg=document.getElementById("premStatusMsg");
+  if(isPremium){msg.innerHTML=`👑 Premium aktif hingga ${premiumExpiry}`;["premCard1","premCard2"].forEach(id=>{const c=document.getElementById(id);if(c)c.classList.add("owned");});}
+  else{msg.innerHTML=`✨ Upgrade ke Premium untuk keuntungan lebih!`;["premCard1","premCard2"].forEach(id=>{const c=document.getElementById(id);if(c)c.classList.remove("owned");});}
+}
+
+function renderCoinMenu(){
+  document.getElementById("coinsInCoinMenu").innerHTML=coins;
+  const list=document.getElementById("coinMenuList");
+  list.innerHTML="";
+
+  // Group by rarity order
+  const order=["common","rare","epic","legendary"];
+  const sorted=[...coinMenuCatalog].sort((a,b)=>order.indexOf(a.rarity)-order.indexOf(b.rarity));
+
+  sorted.forEach(item=>{
+    const owned=!!coinMenuUnlocked[item.name];
+    const canAfford=coins>=item.cost;
+    const pct=Math.min(100,Math.round((coins/item.cost)*100));
+    const rColor=rarityColor[item.rarity]||"#888";
+    const rLabel=rarityLabel[item.rarity]||item.rarity;
+
+    const div=document.createElement("div");
+    div.className="coin-menu-item"+(owned?" owned":!canAfford?" locked":"");
+
+    let actionBtn="";
+    if(owned){
+      actionBtn=`<button class="coin-menu-btn btn-owned" onclick="addCoinMenuItem('${item.name.replace(/'/g,"\\'")}')">🛒 Tambah</button>`;
+    } else if(canAfford){
+      actionBtn=`<button class="coin-menu-btn" onclick="unlockCoinMenuItem('${item.name.replace(/'/g,"\\'")}',${item.cost})">🔓 Beli</button>`;
+    } else {
+      const kurang=item.cost-coins;
+      actionBtn=`
+        <button class="coin-menu-btn" disabled>🔒 Kunci</button>
+        <div style="font-size:10px;color:#e74c3c;text-align:right;margin-top:3px;">-${kurang}🪙 lagi</div>
+        <div style="width:70px;height:5px;background:#eee;border-radius:3px;margin-top:4px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:${rColor};border-radius:3px;transition:.3s;"></div>
+        </div>
+        <div style="font-size:9px;color:#aaa;text-align:right;">${pct}%</div>
+      `;
+    }
+
+    div.innerHTML=`
+      <div class="coin-menu-emoji">${item.emoji}</div>
+      <div class="coin-menu-info">
+        <div class="coin-menu-name">${item.name}${owned?' <span style="color:#27ae60;font-size:12px;">✅</span>':''}</div>
+        <div class="coin-menu-desc">${item.desc}</div>
+        <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="background:${rColor};color:#fff;font-size:10px;border-radius:6px;padding:1px 7px;font-weight:bold;">${rLabel}</span>
+          <span style="font-size:11px;color:#aaa;">${item.category}</span>
+        </div>
+        <div class="coin-menu-cost" style="margin-top:4px;">${owned?'✅ Sudah dimiliki':'🪙 '+item.cost+' koin'+(canAfford?' <span style="color:#27ae60;font-weight:bold;">— Mampu!</span>':'')}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;min-width:80px;">
+        ${actionBtn}
+      </div>
+    `;
+    list.appendChild(div);
+  });
+
+  // Tampilkan summary berapa sudah dimiliki
+  const ownedCount=Object.keys(coinMenuUnlocked).length;
+  const totalCount=coinMenuCatalog.length;
+  if(ownedCount>0){
+    const summary=document.createElement("div");
+    summary.style.cssText="text-align:center;padding:12px;background:linear-gradient(135deg,#fff0f8,#ffe0f0);border-radius:12px;margin-top:8px;font-size:13px;color:#c0195a;font-weight:bold;";
+    summary.innerHTML=`🏆 Koleksi: ${ownedCount}/${totalCount} menu dibuka`;
+    list.appendChild(summary);
   }
-  _origNextLevel();
-};
+}
 
+function unlockCoinMenuItem(name,cost){
+  if(coins<cost){showToast(`🪙 Koin kurang! Butuh ${cost}🪙`);return;}
+  const item=coinMenuCatalog.find(i=>i.name===name);if(!item)return;
+  if(coinMenuUnlocked[name]){showToast("✅ Sudah dimiliki!");return;}
+  if(!confirm(`Beli "${name}" seharga ${cost}🪙?\nItem ini bisa ditambahkan ke keranjang kapan saja!`))return;
+  coins-=cost;
+  coinMenuUnlocked[name]=true;
+  // Refresh badge di header
+  addCoins(0); // trigger badge refresh tanpa menambah koin
+  updateShopUI();
+  renderCoinMenu();
+  showToast(`✅ "${name}" berhasil dibuka! Tap 🛒 Tambah untuk pakai di keranjang.`);
+}
+
+function addCoinMenuItem(name){
+  const item=coinMenuCatalog.find(i=>i.name===name);if(!item)return;
+  if(!coinMenuUnlocked[name]){showToast("❌ Item belum di-unlock!");return;}
+  closeShop();
+  addItem(name,0,false,false,true);
+  showToast(`🎉 ${item.emoji} ${name} ditambah ke keranjang gratis!`);
+}
+
+function addCoins(amt,msg){
+  coins+=amt;
+  document.getElementById("coinsCount").innerHTML=coins;
+  // Update badge menu koin yang dimiliki
+  const ownedCount=Object.keys(coinMenuUnlocked).length;
+  const badge=document.getElementById("coinsOwnedBadge");
+  const badgeNum=document.getElementById("coinsOwnedCount");
+  if(badge&&badgeNum){
+    if(ownedCount>0){badge.style.display="inline";badgeNum.textContent=ownedCount;}
+    else badge.style.display="none";
+  }
+  if(msg)showToast(msg);
+}
+function buyCoinPack(amt,price){
+  if(confirm(`Beli ${amt}🪙 seharga ${price}?\n(Simulasi: langsung dapat koin)`)){addCoins(amt,`✅ +${amt}🪙 berhasil ditambahkan!`);updateShopUI();}
+}
+function buyPremium(type,price,days){
+  if(isPremium){showToast("👑 Kamu sudah Premium!");return;}
+  if(confirm(`Beli Premium ${type} seharga ${price}?\n(Simulasi: langsung aktif)`)){
+    isPremium=true;const exp=new Date();exp.setDate(exp.getDate()+days);premiumExpiry=exp.toLocaleDateString("id-ID");
+    document.getElementById("premiumBadge").style.display="inline";
+    addCoins(type==="weekly"?50:100,`👑 Premium aktif! +${type==="weekly"?50:100}🪙 bonus!`);updateShopUI();
+  }
+}
+function buyExtraLife(){if(coins<50){showToast("🪙 Koin tidak cukup! Butuh 50🪙");return;}if(lives>=3){showToast("❤️ Nyawa sudah penuh!");return;}coins-=50;lives++;updateLivesDisplay();updateShopUI();showToast("❤️ +1 Nyawa! (-50🪙)");}
+function buyExtraTime(){if(coins<30){showToast("🪙 Koin tidak cukup! Butuh 30🪙");return;}coins-=30;time+=30;updateShopUI();showToast("⏰ +30 Detik! (-30🪙)");document.getElementById("coinBuyTime").style.display="none";}
+function buyRevealPrices(){if(coins<80){showToast("🪙 Koin tidak cukup! Butuh 80🪙");return;}coins-=80;pricesRevealed=true;renderMarket(activeCat);updateShopUI();showToast("🔍 Semua harga terungkap! (-80🪙)");}
+function buyBudgetBoost(){if(coins<100){showToast("🪙 Koin tidak cukup! Butuh 100🪙");return;}coins-=100;budget+=20000;updateCartMeta();updateShopUI();document.getElementById("budgetText").innerHTML=`💰 Rp${budget.toLocaleString("id-ID")}`;showToast("💰 +Rp20.000 budget! (-100🪙)");}
+
+function showToast(msg){const t=document.getElementById("toast");t.innerHTML=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2800);}
+
+const BGM_FILE="BGM.mp3",GAMEOVER_FILE="GAMEOVER.mp3",WIN_LEVEL_FILE="WINLEVEL.mp3",WIN_ALL_FILE="FINISH.mp3";
+const bgmAudio=new Audio(BGM_FILE);bgmAudio.loop=true;bgmAudio.volume=0.5;
+const gameOverAudio=new Audio(GAMEOVER_FILE);gameOverAudio.volume=0.7;
+const winLevelAudio=new Audio(WIN_LEVEL_FILE);winLevelAudio.volume=0.8;
+const winAllAudio=new Audio(WIN_ALL_FILE);winAllAudio.volume=0.8;
+function playBGM(){[gameOverAudio,winLevelAudio,winAllAudio].forEach(a=>{a.pause();a.currentTime=0;});bgmAudio.currentTime=0;bgmAudio.play().catch(()=>{});}
+function stopBGM(){bgmAudio.pause();bgmAudio.currentTime=0;}
+function playGameOverMusic(){bgmAudio.pause();bgmAudio.currentTime=0;gameOverAudio.currentTime=0;gameOverAudio.play().catch(()=>{});}
+function stopGameOverMusic(){gameOverAudio.pause();gameOverAudio.currentTime=0;}
+function playWinLevel(){bgmAudio.pause();winLevelAudio.currentTime=0;winLevelAudio.play().catch(()=>{});winLevelAudio.onended=()=>bgmAudio.play().catch(()=>{});}
+function playWinAll(){bgmAudio.pause();bgmAudio.currentTime=0;winAllAudio.currentTime=0;winAllAudio.play().catch(()=>{});}
+
+applyLang();
 </script>
-
 </body>
 </html>
