@@ -1138,7 +1138,7 @@ function payNow(){
   let stars,starLabel;
   if(selisih===0){stars="⭐⭐⭐";starLabel=lang==="en"?"PERFECT! Spot on! 🎯":"SEMPURNA! Pas banget! 🎯";}
   else if(selisih<=15000){stars="⭐⭐";starLabel=lang==="en"?"Great! Almost perfect!":"Bagus! Hampir sempurna! 👏";}
-  else if(selisih<=40000){stars="⭐";starLabel=lang==="en"?"Passed! Be more careful.":"Berhasil! Bisa lebih irit lagi 💪";}
+  else if(selisih<=40000){stars="⭐";starLabel=lang==="en"?"Passed! Be more careful.":"Berhasil!Masukkan sesuai Budged untuk mendapatkan 3 bintang 💪";}
   else{stars="🌟";starLabel=lang==="en"?"Passed but lots of change!":"Lolos, tapi banyak sisa!";}
   document.getElementById("starBox").innerHTML=stars;
   document.getElementById("starLabel").innerHTML=`${starLabel}<br><small style="color:#aaa;">Sisa: Rp${selisih.toLocaleString("id-ID")}</small>`;
